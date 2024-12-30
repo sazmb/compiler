@@ -7,3 +7,14 @@
 122	1226	7572654989412845	CMakeFiles/compiler_project2.dir/genCode.c.obj	3c92c559f8921bff
 1264	2298	7572655001109395	compiler_project2.exe	6346636ac6a950f6
 21	1496	7572712250425253	build.ninja	3926c6e6be0a5371
+88	584	7572723598314163	CMakeFiles/compiler_project2.dir/main.c.obj	5ca8e50d092f9edc
+586	1078	7572723603296563	CMakeFiles/compiler_project2.dir/lexer.c.obj	9472a8f684e10e36
+1078	1530	7572723608200805	CMakeFiles/compiler_project2.dir/parser.c.obj	d348ac5c2f000e2d
+1531	1966	7572723612723078	CMakeFiles/compiler_project2.dir/symbolTable.c.obj	c919c00bda8e0ae6
+1967	2308	7572723617084295	CMakeFiles/compiler_project2.dir/tree.c.obj	847dd3059f3b726e
+2308	2837	7572723620493347	CMakeFiles/compiler_project2.dir/genCode.c.obj	95d2e736555b76da
+2837	3362	7572723625779126	compiler_project2.exe	6346636ac6a950f6
+377	1621	7572765892934211	CMakeFiles/compiler_project2.dir/lexer.c.obj	9472a8f684e10e36
+1623	2015	7572765905339463	CMakeFiles/compiler_project2.dir/parser.c.obj	d348ac5c2f000e2d
+2015	2870	7572765909264413	CMakeFiles/compiler_project2.dir/symbolTable.c.obj	c919c00bda8e0ae6
+2871	3465	7572765917809902	compiler_project2.exe	6346636ac6a950f6

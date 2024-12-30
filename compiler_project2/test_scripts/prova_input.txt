@@ -1,13 +1,8 @@
 types
-    num = int;
-    str = string;
+    arr = [int];
 variables
-    name : str;
-    id : num;
-    id2 : num;
+    numbers : arr;
 run
-    name = "John";
-    id = 101;
-    write name;
-    write id;
+     numbers = [1, 2, 3, 4];
+        write numbers[2];
 end

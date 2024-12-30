@@ -131,7 +131,7 @@ int evaluate_dim_2(Tdomain domain) {
       case D_REAL:
          return 8;
       case D_STRING:
-         return 1;
+         return 4;
       default:
          return 0;
    }
