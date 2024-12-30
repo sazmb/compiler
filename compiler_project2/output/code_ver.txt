@@ -1,0 +1,18 @@
+Code size: 16
+
+0	CODE	15
+1	VARS	3
+2	NEWO	4	1
+3	NEWO	4	1
+4	NEWO	4	1
+5	LODA	0	name
+6	LOCS	"John"
+7	STOR	
+8	LODA	0	id
+9	LOCI	101
+10	STOR	
+11	LOAD	0	name
+12	WRIT	s
+13	LOAD	0	id
+14	WRIT	i
+15	HALT	

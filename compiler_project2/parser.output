@@ -1,0 +1,2870 @@
+Terminals unused in grammar
+
+    DEF
+    ERROR
+    ADD
+    SUB
+    CAST_INT
+    CAST_REAL
+
+
+Grammar
+
+    0 $accept: program $end
+
+    1 program: type_section var_section func_section run_section
+
+    2 type_section: TYPES type_decl_list
+    3             | ε
+
+    4 type_decl_list: type_decl type_decl_list
+    5               | type_decl
+
+    6 type_decl: id_list ASSIGN type ';'
+
+    7 @1: ε
+
+    8 id_list: ID @1 ',' id_list
+    9        | ID
+
+   10 type: atomic_type
+   11     | record_type
+   12     | array_type
+
+   13 atomic_type: INT
+   14            | REAL
+   15            | STRING
+   16            | BOOL
+   17            | ID
+
+   18 record_type: '{' atomic_decl_list '}'
+
+   19 atomic_decl_list: atomic_decl ',' atomic_decl_list
+   20                 | atomic_decl
+
+   21 @2: ε
+
+   22 atomic_decl: ID @2 ':' atomic_type
+
+   23 array_type: '[' array_elem_type ']'
+
+   24 array_elem_type: atomic_type
+   25                | record_type
+
+   26 var_section: VARIABLES var_decl_list
+   27            | ε
+
+   28 var_decl_list: var_decl var_decl_list
+   29              | var_decl
+
+   30 var_decl: id_list ':' type ';'
+
+   31 func_section: FUNCTIONS fun_decl_list
+   32             | ε
+
+   33 fun_decl_list: fun_decl fun_decl_list
+   34              | fun_decl
+
+   35 @3: ε
+
+   36 fun_decl: ID @3 '(' opt_formal_decl_list ')' ':' type expr END
+
+   37 opt_formal_decl_list: formal_decl_list
+   38                     | ε
+
+   39 formal_decl_list: formal_decl ',' formal_decl_list
+   40                 | formal_decl
+
+   41 @4: ε
+
+   42 formal_decl: ID @4 ':' type
+
+   43 expr: expr bool_op bool_term
+   44     | bool_term
+
+   45 bool_op: OR
+   46        | AND
+
+   47 bool_term: comp_term comp_op comp_term
+   48          | comp_term
+
+   49 comp_op: EQUAL
+   50        | NEQUAL
+   51        | GT
+   52        | GE
+   53        | LE
+   54        | LT
+   55        | IN
+
+   56 comp_term: comp_term add_op term
+   57          | term
+
+   58 add_op: PLUS
+   59       | MINUS
+   60       | CONCAT
+
+   61 term: term mul_op factor
+   62     | factor
+
+   63 mul_op: MUL
+   64       | DIVIDE
+
+   65 factor: unary_op factor
+   66       | '(' expr ')'
+   67       | '|' expr '|'
+   68       | lhs
+   69       | built_in '(' expr ')'
+   70       | atomic_constant
+   71       | record_constructor
+   72       | array_constructor
+   73       | cond_expr
+   74       | func_call
+
+   75 unary_op: MINUSSIGN
+   76         | NOT
+
+   77 built_in: INT
+   78         | REAL
+   79         | EMPTY_TOKEN
+   80         | HEAD_TOKEN
+   81         | TAIL_TOKEN
+
+   82 atomic_constant: BOOLCONST
+   83                | INTCONST
+   84                | REALCONST
+   85                | STRCONST
+
+   86 record_constructor: '{' expr_list '}'
+
+   87 expr_list: expr ',' expr_list
+   88          | expr
+
+   89 cond_expr: IF expr THEN expr ELSE expr END
+
+   90 @5: ε
+
+   91 func_call: ID @5 '(' opt_expr_list ')'
+
+   92 opt_expr_list: expr_list
+   93              | ε
+
+   94 array_constructor: '[' opt_expr_list ']'
+
+   95 run_section: RUN stat_list END
+   96            | ε
+
+   97 stat_list: stat ';' stat_list
+   98          | stat ';'
+
+   99 stat: read_stat
+  100     | write_stat
+  101     | assign_stat
+  102     | if_stat
+  103     | while_stat
+  104     | foreach_stat
+
+  105 read_stat: READ_TOKEN ID
+
+  106 write_stat: WRITE expr
+
+  107 assign_stat: lhs ASSIGN expr
+
+  108 @6: ε
+
+  109 lhs: ID @6 opt_fielding
+  110    | indexing
+
+  111 opt_fielding: '.' ID
+  112             | ε
+
+  113 @7: ε
+
+  114 indexing: ID @7 '[' expr ']' opt_fielding
+
+  115 if_stat: IF expr THEN stat_list else_part END
+
+  116 else_part: ELSE stat_list
+  117          | ε
+
+  118 while_stat: WHILE expr DO stat_list END
+
+  119 @8: ε
+
+  120 @9: ε
+
+  121 foreach_stat: FOREACH ID @8 IN ID @9 DO stat_list END
+
+
+Terminals, with rules where they appear
+
+    $end (0) 0
+    '(' (40) 36 66 69 91
+    ')' (41) 36 66 69 91
+    ',' (44) 8 19 39 87
+    '.' (46) 111
+    ':' (58) 22 30 36 42
+    ';' (59) 6 30 97 98
+    '[' (91) 23 94 114
+    ']' (93) 23 94 114
+    '{' (123) 18 86
+    '|' (124) 67
+    '}' (125) 18 86
+    error (256)
+    DEF (258)
+    INT (259) 13 77
+    STRING (260) 15
+    BOOL (261) 16
+    REAL (262) 14 78
+    ID (263) 8 9 17 22 36 42 91 105 109 111 114 121
+    INTCONST (264) 83
+    REALCONST (265) 84
+    STRCONST (266) 85
+    BOOLCONST (267) 82
+    TYPES (268) 2
+    ASSIGN (269) 6 107
+    ERROR (270)
+    VARIABLES (271) 26
+    FUNCTIONS (272) 31
+    IF (273) 89 115
+    THEN (274) 89 115
+    ELSE (275) 89 116
+    END (276) 36 89 95 115 118 121
+    RUN (277) 95
+    READ_TOKEN (278) 105
+    WRITE (279) 106
+    WHILE (280) 118
+    FOREACH (281) 121
+    IN (282) 55 121
+    DO (283) 118 121
+    AND (284) 46
+    OR (285) 45
+    ADD (286)
+    SUB (287)
+    CONCAT (288) 60
+    EQUAL (289) 49
+    NEQUAL (290) 50
+    GT (291) 51
+    GE (292) 52
+    LE (293) 53
+    LT (294) 54
+    PLUS (295) 58
+    MINUS (296) 59
+    MUL (297) 63
+    DIVIDE (298) 64
+    NOT (299) 76
+    MINUSSIGN (300) 75
+    CAST_INT (301)
+    CAST_REAL (302)
+    EMPTY_TOKEN (303) 79
+    HEAD_TOKEN (304) 80
+    TAIL_TOKEN (305) 81
+
+
+Nonterminals, with rules where they appear
+
+    $accept (62)
+        on left: 0
+    program (63)
+        on left: 1
+        on right: 0
+    type_section (64)
+        on left: 2 3
+        on right: 1
+    type_decl_list (65)
+        on left: 4 5
+        on right: 2 4
+    type_decl (66)
+        on left: 6
+        on right: 4 5
+    id_list (67)
+        on left: 8 9
+        on right: 6 8 30
+    @1 (68)
+        on left: 7
+        on right: 8
+    type (69)
+        on left: 10 11 12
+        on right: 6 30 36 42
+    atomic_type (70)
+        on left: 13 14 15 16 17
+        on right: 10 22 24
+    record_type (71)
+        on left: 18
+        on right: 11 25
+    atomic_decl_list (72)
+        on left: 19 20
+        on right: 18 19
+    atomic_decl (73)
+        on left: 22
+        on right: 19 20
+    @2 (74)
+        on left: 21
+        on right: 22
+    array_type (75)
+        on left: 23
+        on right: 12
+    array_elem_type (76)
+        on left: 24 25
+        on right: 23
+    var_section (77)
+        on left: 26 27
+        on right: 1
+    var_decl_list (78)
+        on left: 28 29
+        on right: 26 28
+    var_decl (79)
+        on left: 30
+        on right: 28 29
+    func_section (80)
+        on left: 31 32
+        on right: 1
+    fun_decl_list (81)
+        on left: 33 34
+        on right: 31 33
+    fun_decl (82)
+        on left: 36
+        on right: 33 34
+    @3 (83)
+        on left: 35
+        on right: 36
+    opt_formal_decl_list (84)
+        on left: 37 38
+        on right: 36
+    formal_decl_list (85)
+        on left: 39 40
+        on right: 37 39
+    formal_decl (86)
+        on left: 42
+        on right: 39 40
+    @4 (87)
+        on left: 41
+        on right: 42
+    expr (88)
+        on left: 43 44
+        on right: 36 43 66 67 69 87 88 89 106 107 114 115 118
+    bool_op (89)
+        on left: 45 46
+        on right: 43
+    bool_term (90)
+        on left: 47 48
+        on right: 43 44
+    comp_op (91)
+        on left: 49 50 51 52 53 54 55
+        on right: 47
+    comp_term (92)
+        on left: 56 57
+        on right: 47 48 56
+    add_op (93)
+        on left: 58 59 60
+        on right: 56
+    term (94)
+        on left: 61 62
+        on right: 56 57 61
+    mul_op (95)
+        on left: 63 64
+        on right: 61
+    factor (96)
+        on left: 65 66 67 68 69 70 71 72 73 74
+        on right: 61 62 65
+    unary_op (97)
+        on left: 75 76
+        on right: 65
+    built_in (98)
+        on left: 77 78 79 80 81
+        on right: 69
+    atomic_constant (99)
+        on left: 82 83 84 85
+        on right: 70
+    record_constructor (100)
+        on left: 86
+        on right: 71
+    expr_list (101)
+        on left: 87 88
+        on right: 86 87 92
+    cond_expr (102)
+        on left: 89
+        on right: 73
+    func_call (103)
+        on left: 91
+        on right: 74
+    @5 (104)
+        on left: 90
+        on right: 91
+    opt_expr_list (105)
+        on left: 92 93
+        on right: 91 94
+    array_constructor (106)
+        on left: 94
+        on right: 72
+    run_section (107)
+        on left: 95 96
+        on right: 1
+    stat_list (108)
+        on left: 97 98
+        on right: 95 97 115 116 118 121
+    stat (109)
+        on left: 99 100 101 102 103 104
+        on right: 97 98
+    read_stat (110)
+        on left: 105
+        on right: 99
+    write_stat (111)
+        on left: 106
+        on right: 100
+    assign_stat (112)
+        on left: 107
+        on right: 101
+    lhs (113)
+        on left: 109 110
+        on right: 68 107
+    @6 (114)
+        on left: 108
+        on right: 109
+    opt_fielding (115)
+        on left: 111 112
+        on right: 109 114
+    indexing (116)
+        on left: 114
+        on right: 110
+    @7 (117)
+        on left: 113
+        on right: 114
+    if_stat (118)
+        on left: 115
+        on right: 102
+    else_part (119)
+        on left: 116 117
+        on right: 115
+    while_stat (120)
+        on left: 118
+        on right: 103
+    foreach_stat (121)
+        on left: 121
+        on right: 104
+    @8 (122)
+        on left: 119
+        on right: 121
+    @9 (123)
+        on left: 120
+        on right: 121
+
+
+State 0
+
+    0 $accept: • program $end
+
+    TYPES  shift, and go to state 1
+
+    $default  reduce using rule 3 (type_section)
+
+    program       go to state 2
+    type_section  go to state 3
+
+
+State 1
+
+    2 type_section: TYPES • type_decl_list
+
+    ID  shift, and go to state 4
+
+    type_decl_list  go to state 5
+    type_decl       go to state 6
+    id_list         go to state 7
+
+
+State 2
+
+    0 $accept: program • $end
+
+    $end  shift, and go to state 8
+
+
+State 3
+
+    1 program: type_section • var_section func_section run_section
+
+    VARIABLES  shift, and go to state 9
+
+    $default  reduce using rule 27 (var_section)
+
+    var_section  go to state 10
+
+
+State 4
+
+    8 id_list: ID • @1 ',' id_list
+    9        | ID •
+
+    ','       reduce using rule 7 (@1)
+    $default  reduce using rule 9 (id_list)
+
+    @1  go to state 11
+
+
+State 5
+
+    2 type_section: TYPES type_decl_list •
+
+    $default  reduce using rule 2 (type_section)
+
+
+State 6
+
+    4 type_decl_list: type_decl • type_decl_list
+    5               | type_decl •
+
+    ID  shift, and go to state 4
+
+    $default  reduce using rule 5 (type_decl_list)
+
+    type_decl_list  go to state 12
+    type_decl       go to state 6
+    id_list         go to state 7
+
+
+State 7
+
+    6 type_decl: id_list • ASSIGN type ';'
+
+    ASSIGN  shift, and go to state 13
+
+
+State 8
+
+    0 $accept: program $end •
+
+    $default  accept
+
+
+State 9
+
+   26 var_section: VARIABLES • var_decl_list
+
+    ID  shift, and go to state 4
+
+    id_list        go to state 14
+    var_decl_list  go to state 15
+    var_decl       go to state 16
+
+
+State 10
+
+    1 program: type_section var_section • func_section run_section
+
+    FUNCTIONS  shift, and go to state 17
+
+    $default  reduce using rule 32 (func_section)
+
+    func_section  go to state 18
+
+
+State 11
+
+    8 id_list: ID @1 • ',' id_list
+
+    ','  shift, and go to state 19
+
+
+State 12
+
+    4 type_decl_list: type_decl type_decl_list •
+
+    $default  reduce using rule 4 (type_decl_list)
+
+
+State 13
+
+    6 type_decl: id_list ASSIGN • type ';'
+
+    INT     shift, and go to state 20
+    STRING  shift, and go to state 21
+    BOOL    shift, and go to state 22
+    REAL    shift, and go to state 23
+    ID      shift, and go to state 24
+    '{'     shift, and go to state 25
+    '['     shift, and go to state 26
+
+    type         go to state 27
+    atomic_type  go to state 28
+    record_type  go to state 29
+    array_type   go to state 30
+
+
+State 14
+
+   30 var_decl: id_list • ':' type ';'
+
+    ':'  shift, and go to state 31
+
+
+State 15
+
+   26 var_section: VARIABLES var_decl_list •
+
+    $default  reduce using rule 26 (var_section)
+
+
+State 16
+
+   28 var_decl_list: var_decl • var_decl_list
+   29              | var_decl •
+
+    ID  shift, and go to state 4
+
+    $default  reduce using rule 29 (var_decl_list)
+
+    id_list        go to state 14
+    var_decl_list  go to state 32
+    var_decl       go to state 16
+
+
+State 17
+
+   31 func_section: FUNCTIONS • fun_decl_list
+
+    ID  shift, and go to state 33
+
+    fun_decl_list  go to state 34
+    fun_decl       go to state 35
+
+
+State 18
+
+    1 program: type_section var_section func_section • run_section
+
+    RUN  shift, and go to state 36
+
+    $default  reduce using rule 96 (run_section)
+
+    run_section  go to state 37
+
+
+State 19
+
+    8 id_list: ID @1 ',' • id_list
+
+    ID  shift, and go to state 4
+
+    id_list  go to state 38
+
+
+State 20
+
+   13 atomic_type: INT •
+
+    $default  reduce using rule 13 (atomic_type)
+
+
+State 21
+
+   15 atomic_type: STRING •
+
+    $default  reduce using rule 15 (atomic_type)
+
+
+State 22
+
+   16 atomic_type: BOOL •
+
+    $default  reduce using rule 16 (atomic_type)
+
+
+State 23
+
+   14 atomic_type: REAL •
+
+    $default  reduce using rule 14 (atomic_type)
+
+
+State 24
+
+   17 atomic_type: ID •
+
+    $default  reduce using rule 17 (atomic_type)
+
+
+State 25
+
+   18 record_type: '{' • atomic_decl_list '}'
+
+    ID  shift, and go to state 39
+
+    atomic_decl_list  go to state 40
+    atomic_decl       go to state 41
+
+
+State 26
+
+   23 array_type: '[' • array_elem_type ']'
+
+    INT     shift, and go to state 20
+    STRING  shift, and go to state 21
+    BOOL    shift, and go to state 22
+    REAL    shift, and go to state 23
+    ID      shift, and go to state 24
+    '{'     shift, and go to state 25
+
+    atomic_type      go to state 42
+    record_type      go to state 43
+    array_elem_type  go to state 44
+
+
+State 27
+
+    6 type_decl: id_list ASSIGN type • ';'
+
+    ';'  shift, and go to state 45
+
+
+State 28
+
+   10 type: atomic_type •
+
+    $default  reduce using rule 10 (type)
+
+
+State 29
+
+   11 type: record_type •
+
+    $default  reduce using rule 11 (type)
+
+
+State 30
+
+   12 type: array_type •
+
+    $default  reduce using rule 12 (type)
+
+
+State 31
+
+   30 var_decl: id_list ':' • type ';'
+
+    INT     shift, and go to state 20
+    STRING  shift, and go to state 21
+    BOOL    shift, and go to state 22
+    REAL    shift, and go to state 23
+    ID      shift, and go to state 24
+    '{'     shift, and go to state 25
+    '['     shift, and go to state 26
+
+    type         go to state 46
+    atomic_type  go to state 28
+    record_type  go to state 29
+    array_type   go to state 30
+
+
+State 32
+
+   28 var_decl_list: var_decl var_decl_list •
+
+    $default  reduce using rule 28 (var_decl_list)
+
+
+State 33
+
+   36 fun_decl: ID • @3 '(' opt_formal_decl_list ')' ':' type expr END
+
+    $default  reduce using rule 35 (@3)
+
+    @3  go to state 47
+
+
+State 34
+
+   31 func_section: FUNCTIONS fun_decl_list •
+
+    $default  reduce using rule 31 (func_section)
+
+
+State 35
+
+   33 fun_decl_list: fun_decl • fun_decl_list
+   34              | fun_decl •
+
+    ID  shift, and go to state 33
+
+    $default  reduce using rule 34 (fun_decl_list)
+
+    fun_decl_list  go to state 48
+    fun_decl       go to state 35
+
+
+State 36
+
+   95 run_section: RUN • stat_list END
+
+    ID          shift, and go to state 49
+    IF          shift, and go to state 50
+    READ_TOKEN  shift, and go to state 51
+    WRITE       shift, and go to state 52
+    WHILE       shift, and go to state 53
+    FOREACH     shift, and go to state 54
+
+    stat_list     go to state 55
+    stat          go to state 56
+    read_stat     go to state 57
+    write_stat    go to state 58
+    assign_stat   go to state 59
+    lhs           go to state 60
+    indexing      go to state 61
+    if_stat       go to state 62
+    while_stat    go to state 63
+    foreach_stat  go to state 64
+
+
+State 37
+
+    1 program: type_section var_section func_section run_section •
+
+    $default  reduce using rule 1 (program)
+
+
+State 38
+
+    8 id_list: ID @1 ',' id_list •
+
+    $default  reduce using rule 8 (id_list)
+
+
+State 39
+
+   22 atomic_decl: ID • @2 ':' atomic_type
+
+    $default  reduce using rule 21 (@2)
+
+    @2  go to state 65
+
+
+State 40
+
+   18 record_type: '{' atomic_decl_list • '}'
+
+    '}'  shift, and go to state 66
+
+
+State 41
+
+   19 atomic_decl_list: atomic_decl • ',' atomic_decl_list
+   20                 | atomic_decl •
+
+    ','  shift, and go to state 67
+
+    $default  reduce using rule 20 (atomic_decl_list)
+
+
+State 42
+
+   24 array_elem_type: atomic_type •
+
+    $default  reduce using rule 24 (array_elem_type)
+
+
+State 43
+
+   25 array_elem_type: record_type •
+
+    $default  reduce using rule 25 (array_elem_type)
+
+
+State 44
+
+   23 array_type: '[' array_elem_type • ']'
+
+    ']'  shift, and go to state 68
+
+
+State 45
+
+    6 type_decl: id_list ASSIGN type ';' •
+
+    $default  reduce using rule 6 (type_decl)
+
+
+State 46
+
+   30 var_decl: id_list ':' type • ';'
+
+    ';'  shift, and go to state 69
+
+
+State 47
+
+   36 fun_decl: ID @3 • '(' opt_formal_decl_list ')' ':' type expr END
+
+    '('  shift, and go to state 70
+
+
+State 48
+
+   33 fun_decl_list: fun_decl fun_decl_list •
+
+    $default  reduce using rule 33 (fun_decl_list)
+
+
+State 49
+
+  109 lhs: ID • @6 opt_fielding
+  114 indexing: ID • @7 '[' expr ']' opt_fielding
+
+    '['       reduce using rule 113 (@7)
+    $default  reduce using rule 108 (@6)
+
+    @6  go to state 71
+    @7  go to state 72
+
+
+State 50
+
+  115 if_stat: IF • expr THEN stat_list else_part END
+
+    INT          shift, and go to state 73
+    REAL         shift, and go to state 74
+    ID           shift, and go to state 75
+    INTCONST     shift, and go to state 76
+    REALCONST    shift, and go to state 77
+    STRCONST     shift, and go to state 78
+    BOOLCONST    shift, and go to state 79
+    IF           shift, and go to state 80
+    NOT          shift, and go to state 81
+    MINUSSIGN    shift, and go to state 82
+    EMPTY_TOKEN  shift, and go to state 83
+    HEAD_TOKEN   shift, and go to state 84
+    TAIL_TOKEN   shift, and go to state 85
+    '{'          shift, and go to state 86
+    '['          shift, and go to state 87
+    '('          shift, and go to state 88
+    '|'          shift, and go to state 89
+
+    expr                go to state 90
+    bool_term           go to state 91
+    comp_term           go to state 92
+    term                go to state 93
+    factor              go to state 94
+    unary_op            go to state 95
+    built_in            go to state 96
+    atomic_constant     go to state 97
+    record_constructor  go to state 98
+    cond_expr           go to state 99
+    func_call           go to state 100
+    array_constructor   go to state 101
+    lhs                 go to state 102
+    indexing            go to state 61
+
+
+State 51
+
+  105 read_stat: READ_TOKEN • ID
+
+    ID  shift, and go to state 103
+
+
+State 52
+
+  106 write_stat: WRITE • expr
+
+    INT          shift, and go to state 73
+    REAL         shift, and go to state 74
+    ID           shift, and go to state 75
+    INTCONST     shift, and go to state 76
+    REALCONST    shift, and go to state 77
+    STRCONST     shift, and go to state 78
+    BOOLCONST    shift, and go to state 79
+    IF           shift, and go to state 80
+    NOT          shift, and go to state 81
+    MINUSSIGN    shift, and go to state 82
+    EMPTY_TOKEN  shift, and go to state 83
+    HEAD_TOKEN   shift, and go to state 84
+    TAIL_TOKEN   shift, and go to state 85
+    '{'          shift, and go to state 86
+    '['          shift, and go to state 87
+    '('          shift, and go to state 88
+    '|'          shift, and go to state 89
+
+    expr                go to state 104
+    bool_term           go to state 91
+    comp_term           go to state 92
+    term                go to state 93
+    factor              go to state 94
+    unary_op            go to state 95
+    built_in            go to state 96
+    atomic_constant     go to state 97
+    record_constructor  go to state 98
+    cond_expr           go to state 99
+    func_call           go to state 100
+    array_constructor   go to state 101
+    lhs                 go to state 102
+    indexing            go to state 61
+
+
+State 53
+
+  118 while_stat: WHILE • expr DO stat_list END
+
+    INT          shift, and go to state 73
+    REAL         shift, and go to state 74
+    ID           shift, and go to state 75
+    INTCONST     shift, and go to state 76
+    REALCONST    shift, and go to state 77
+    STRCONST     shift, and go to state 78
+    BOOLCONST    shift, and go to state 79
+    IF           shift, and go to state 80
+    NOT          shift, and go to state 81
+    MINUSSIGN    shift, and go to state 82
+    EMPTY_TOKEN  shift, and go to state 83
+    HEAD_TOKEN   shift, and go to state 84
+    TAIL_TOKEN   shift, and go to state 85
+    '{'          shift, and go to state 86
+    '['          shift, and go to state 87
+    '('          shift, and go to state 88
+    '|'          shift, and go to state 89
+
+    expr                go to state 105
+    bool_term           go to state 91
+    comp_term           go to state 92
+    term                go to state 93
+    factor              go to state 94
+    unary_op            go to state 95
+    built_in            go to state 96
+    atomic_constant     go to state 97
+    record_constructor  go to state 98
+    cond_expr           go to state 99
+    func_call           go to state 100
+    array_constructor   go to state 101
+    lhs                 go to state 102
+    indexing            go to state 61
+
+
+State 54
+
+  121 foreach_stat: FOREACH • ID @8 IN ID @9 DO stat_list END
+
+    ID  shift, and go to state 106
+
+
+State 55
+
+   95 run_section: RUN stat_list • END
+
+    END  shift, and go to state 107
+
+
+State 56
+
+   97 stat_list: stat • ';' stat_list
+   98          | stat • ';'
+
+    ';'  shift, and go to state 108
+
+
+State 57
+
+   99 stat: read_stat •
+
+    $default  reduce using rule 99 (stat)
+
+
+State 58
+
+  100 stat: write_stat •
+
+    $default  reduce using rule 100 (stat)
+
+
+State 59
+
+  101 stat: assign_stat •
+
+    $default  reduce using rule 101 (stat)
+
+
+State 60
+
+  107 assign_stat: lhs • ASSIGN expr
+
+    ASSIGN  shift, and go to state 109
+
+
+State 61
+
+  110 lhs: indexing •
+
+    $default  reduce using rule 110 (lhs)
+
+
+State 62
+
+  102 stat: if_stat •
+
+    $default  reduce using rule 102 (stat)
+
+
+State 63
+
+  103 stat: while_stat •
+
+    $default  reduce using rule 103 (stat)
+
+
+State 64
+
+  104 stat: foreach_stat •
+
+    $default  reduce using rule 104 (stat)
+
+
+State 65
+
+   22 atomic_decl: ID @2 • ':' atomic_type
+
+    ':'  shift, and go to state 110
+
+
+State 66
+
+   18 record_type: '{' atomic_decl_list '}' •
+
+    $default  reduce using rule 18 (record_type)
+
+
+State 67
+
+   19 atomic_decl_list: atomic_decl ',' • atomic_decl_list
+
+    ID  shift, and go to state 39
+
+    atomic_decl_list  go to state 111
+    atomic_decl       go to state 41
+
+
+State 68
+
+   23 array_type: '[' array_elem_type ']' •
+
+    $default  reduce using rule 23 (array_type)
+
+
+State 69
+
+   30 var_decl: id_list ':' type ';' •
+
+    $default  reduce using rule 30 (var_decl)
+
+
+State 70
+
+   36 fun_decl: ID @3 '(' • opt_formal_decl_list ')' ':' type expr END
+
+    ID  shift, and go to state 112
+
+    $default  reduce using rule 38 (opt_formal_decl_list)
+
+    opt_formal_decl_list  go to state 113
+    formal_decl_list      go to state 114
+    formal_decl           go to state 115
+
+
+State 71
+
+  109 lhs: ID @6 • opt_fielding
+
+    '.'  shift, and go to state 116
+
+    $default  reduce using rule 112 (opt_fielding)
+
+    opt_fielding  go to state 117
+
+
+State 72
+
+  114 indexing: ID @7 • '[' expr ']' opt_fielding
+
+    '['  shift, and go to state 118
+
+
+State 73
+
+   77 built_in: INT •
+
+    $default  reduce using rule 77 (built_in)
+
+
+State 74
+
+   78 built_in: REAL •
+
+    $default  reduce using rule 78 (built_in)
+
+
+State 75
+
+   91 func_call: ID • @5 '(' opt_expr_list ')'
+  109 lhs: ID • @6 opt_fielding
+  114 indexing: ID • @7 '[' expr ']' opt_fielding
+
+    '['       reduce using rule 113 (@7)
+    '('       reduce using rule 90 (@5)
+    $default  reduce using rule 108 (@6)
+
+    @5  go to state 119
+    @6  go to state 71
+    @7  go to state 72
+
+
+State 76
+
+   83 atomic_constant: INTCONST •
+
+    $default  reduce using rule 83 (atomic_constant)
+
+
+State 77
+
+   84 atomic_constant: REALCONST •
+
+    $default  reduce using rule 84 (atomic_constant)
+
+
+State 78
+
+   85 atomic_constant: STRCONST •
+
+    $default  reduce using rule 85 (atomic_constant)
+
+
+State 79
+
+   82 atomic_constant: BOOLCONST •
+
+    $default  reduce using rule 82 (atomic_constant)
+
+
+State 80
+
+   89 cond_expr: IF • expr THEN expr ELSE expr END
+
+    INT          shift, and go to state 73
+    REAL         shift, and go to state 74
+    ID           shift, and go to state 75
+    INTCONST     shift, and go to state 76
+    REALCONST    shift, and go to state 77
+    STRCONST     shift, and go to state 78
+    BOOLCONST    shift, and go to state 79
+    IF           shift, and go to state 80
+    NOT          shift, and go to state 81
+    MINUSSIGN    shift, and go to state 82
+    EMPTY_TOKEN  shift, and go to state 83
+    HEAD_TOKEN   shift, and go to state 84
+    TAIL_TOKEN   shift, and go to state 85
+    '{'          shift, and go to state 86
+    '['          shift, and go to state 87
+    '('          shift, and go to state 88
+    '|'          shift, and go to state 89
+
+    expr                go to state 120
+    bool_term           go to state 91
+    comp_term           go to state 92
+    term                go to state 93
+    factor              go to state 94
+    unary_op            go to state 95
+    built_in            go to state 96
+    atomic_constant     go to state 97
+    record_constructor  go to state 98
+    cond_expr           go to state 99
+    func_call           go to state 100
+    array_constructor   go to state 101
+    lhs                 go to state 102
+    indexing            go to state 61
+
+
+State 81
+
+   76 unary_op: NOT •
+
+    $default  reduce using rule 76 (unary_op)
+
+
+State 82
+
+   75 unary_op: MINUSSIGN •
+
+    $default  reduce using rule 75 (unary_op)
+
+
+State 83
+
+   79 built_in: EMPTY_TOKEN •
+
+    $default  reduce using rule 79 (built_in)
+
+
+State 84
+
+   80 built_in: HEAD_TOKEN •
+
+    $default  reduce using rule 80 (built_in)
+
+
+State 85
+
+   81 built_in: TAIL_TOKEN •
+
+    $default  reduce using rule 81 (built_in)
+
+
+State 86
+
+   86 record_constructor: '{' • expr_list '}'
+
+    INT          shift, and go to state 73
+    REAL         shift, and go to state 74
+    ID           shift, and go to state 75
+    INTCONST     shift, and go to state 76
+    REALCONST    shift, and go to state 77
+    STRCONST     shift, and go to state 78
+    BOOLCONST    shift, and go to state 79
+    IF           shift, and go to state 80
+    NOT          shift, and go to state 81
+    MINUSSIGN    shift, and go to state 82
+    EMPTY_TOKEN  shift, and go to state 83
+    HEAD_TOKEN   shift, and go to state 84
+    TAIL_TOKEN   shift, and go to state 85
+    '{'          shift, and go to state 86
+    '['          shift, and go to state 87
+    '('          shift, and go to state 88
+    '|'          shift, and go to state 89
+
+    expr                go to state 121
+    bool_term           go to state 91
+    comp_term           go to state 92
+    term                go to state 93
+    factor              go to state 94
+    unary_op            go to state 95
+    built_in            go to state 96
+    atomic_constant     go to state 97
+    record_constructor  go to state 98
+    expr_list           go to state 122
+    cond_expr           go to state 99
+    func_call           go to state 100
+    array_constructor   go to state 101
+    lhs                 go to state 102
+    indexing            go to state 61
+
+
+State 87
+
+   94 array_constructor: '[' • opt_expr_list ']'
+
+    INT          shift, and go to state 73
+    REAL         shift, and go to state 74
+    ID           shift, and go to state 75
+    INTCONST     shift, and go to state 76
+    REALCONST    shift, and go to state 77
+    STRCONST     shift, and go to state 78
+    BOOLCONST    shift, and go to state 79
+    IF           shift, and go to state 80
+    NOT          shift, and go to state 81
+    MINUSSIGN    shift, and go to state 82
+    EMPTY_TOKEN  shift, and go to state 83
+    HEAD_TOKEN   shift, and go to state 84
+    TAIL_TOKEN   shift, and go to state 85
+    '{'          shift, and go to state 86
+    '['          shift, and go to state 87
+    '('          shift, and go to state 88
+    '|'          shift, and go to state 89
+
+    $default  reduce using rule 93 (opt_expr_list)
+
+    expr                go to state 121
+    bool_term           go to state 91
+    comp_term           go to state 92
+    term                go to state 93
+    factor              go to state 94
+    unary_op            go to state 95
+    built_in            go to state 96
+    atomic_constant     go to state 97
+    record_constructor  go to state 98
+    expr_list           go to state 123
+    cond_expr           go to state 99
+    func_call           go to state 100
+    opt_expr_list       go to state 124
+    array_constructor   go to state 101
+    lhs                 go to state 102
+    indexing            go to state 61
+
+
+State 88
+
+   66 factor: '(' • expr ')'
+
+    INT          shift, and go to state 73
+    REAL         shift, and go to state 74
+    ID           shift, and go to state 75
+    INTCONST     shift, and go to state 76
+    REALCONST    shift, and go to state 77
+    STRCONST     shift, and go to state 78
+    BOOLCONST    shift, and go to state 79
+    IF           shift, and go to state 80
+    NOT          shift, and go to state 81
+    MINUSSIGN    shift, and go to state 82
+    EMPTY_TOKEN  shift, and go to state 83
+    HEAD_TOKEN   shift, and go to state 84
+    TAIL_TOKEN   shift, and go to state 85
+    '{'          shift, and go to state 86
+    '['          shift, and go to state 87
+    '('          shift, and go to state 88
+    '|'          shift, and go to state 89
+
+    expr                go to state 125
+    bool_term           go to state 91
+    comp_term           go to state 92
+    term                go to state 93
+    factor              go to state 94
+    unary_op            go to state 95
+    built_in            go to state 96
+    atomic_constant     go to state 97
+    record_constructor  go to state 98
+    cond_expr           go to state 99
+    func_call           go to state 100
+    array_constructor   go to state 101
+    lhs                 go to state 102
+    indexing            go to state 61
+
+
+State 89
+
+   67 factor: '|' • expr '|'
+
+    INT          shift, and go to state 73
+    REAL         shift, and go to state 74
+    ID           shift, and go to state 75
+    INTCONST     shift, and go to state 76
+    REALCONST    shift, and go to state 77
+    STRCONST     shift, and go to state 78
+    BOOLCONST    shift, and go to state 79
+    IF           shift, and go to state 80
+    NOT          shift, and go to state 81
+    MINUSSIGN    shift, and go to state 82
+    EMPTY_TOKEN  shift, and go to state 83
+    HEAD_TOKEN   shift, and go to state 84
+    TAIL_TOKEN   shift, and go to state 85
+    '{'          shift, and go to state 86
+    '['          shift, and go to state 87
+    '('          shift, and go to state 88
+    '|'          shift, and go to state 89
+
+    expr                go to state 126
+    bool_term           go to state 91
+    comp_term           go to state 92
+    term                go to state 93
+    factor              go to state 94
+    unary_op            go to state 95
+    built_in            go to state 96
+    atomic_constant     go to state 97
+    record_constructor  go to state 98
+    cond_expr           go to state 99
+    func_call           go to state 100
+    array_constructor   go to state 101
+    lhs                 go to state 102
+    indexing            go to state 61
+
+
+State 90
+
+   43 expr: expr • bool_op bool_term
+  115 if_stat: IF expr • THEN stat_list else_part END
+
+    THEN  shift, and go to state 127
+    AND   shift, and go to state 128
+    OR    shift, and go to state 129
+
+    bool_op  go to state 130
+
+
+State 91
+
+   44 expr: bool_term •
+
+    $default  reduce using rule 44 (expr)
+
+
+State 92
+
+   47 bool_term: comp_term • comp_op comp_term
+   48          | comp_term •
+   56 comp_term: comp_term • add_op term
+
+    IN      shift, and go to state 131
+    CONCAT  shift, and go to state 132
+    EQUAL   shift, and go to state 133
+    NEQUAL  shift, and go to state 134
+    GT      shift, and go to state 135
+    GE      shift, and go to state 136
+    LE      shift, and go to state 137
+    LT      shift, and go to state 138
+    PLUS    shift, and go to state 139
+    MINUS   shift, and go to state 140
+
+    $default  reduce using rule 48 (bool_term)
+
+    comp_op  go to state 141
+    add_op   go to state 142
+
+
+State 93
+
+   57 comp_term: term •
+   61 term: term • mul_op factor
+
+    MUL     shift, and go to state 143
+    DIVIDE  shift, and go to state 144
+
+    $default  reduce using rule 57 (comp_term)
+
+    mul_op  go to state 145
+
+
+State 94
+
+   62 term: factor •
+
+    $default  reduce using rule 62 (term)
+
+
+State 95
+
+   65 factor: unary_op • factor
+
+    INT          shift, and go to state 73
+    REAL         shift, and go to state 74
+    ID           shift, and go to state 75
+    INTCONST     shift, and go to state 76
+    REALCONST    shift, and go to state 77
+    STRCONST     shift, and go to state 78
+    BOOLCONST    shift, and go to state 79
+    IF           shift, and go to state 80
+    NOT          shift, and go to state 81
+    MINUSSIGN    shift, and go to state 82
+    EMPTY_TOKEN  shift, and go to state 83
+    HEAD_TOKEN   shift, and go to state 84
+    TAIL_TOKEN   shift, and go to state 85
+    '{'          shift, and go to state 86
+    '['          shift, and go to state 87
+    '('          shift, and go to state 88
+    '|'          shift, and go to state 89
+
+    factor              go to state 146
+    unary_op            go to state 95
+    built_in            go to state 96
+    atomic_constant     go to state 97
+    record_constructor  go to state 98
+    cond_expr           go to state 99
+    func_call           go to state 100
+    array_constructor   go to state 101
+    lhs                 go to state 102
+    indexing            go to state 61
+
+
+State 96
+
+   69 factor: built_in • '(' expr ')'
+
+    '('  shift, and go to state 147
+
+
+State 97
+
+   70 factor: atomic_constant •
+
+    $default  reduce using rule 70 (factor)
+
+
+State 98
+
+   71 factor: record_constructor •
+
+    $default  reduce using rule 71 (factor)
+
+
+State 99
+
+   73 factor: cond_expr •
+
+    $default  reduce using rule 73 (factor)
+
+
+State 100
+
+   74 factor: func_call •
+
+    $default  reduce using rule 74 (factor)
+
+
+State 101
+
+   72 factor: array_constructor •
+
+    $default  reduce using rule 72 (factor)
+
+
+State 102
+
+   68 factor: lhs •
+
+    $default  reduce using rule 68 (factor)
+
+
+State 103
+
+  105 read_stat: READ_TOKEN ID •
+
+    $default  reduce using rule 105 (read_stat)
+
+
+State 104
+
+   43 expr: expr • bool_op bool_term
+  106 write_stat: WRITE expr •
+
+    AND  shift, and go to state 128
+    OR   shift, and go to state 129
+
+    $default  reduce using rule 106 (write_stat)
+
+    bool_op  go to state 130
+
+
+State 105
+
+   43 expr: expr • bool_op bool_term
+  118 while_stat: WHILE expr • DO stat_list END
+
+    DO   shift, and go to state 148
+    AND  shift, and go to state 128
+    OR   shift, and go to state 129
+
+    bool_op  go to state 130
+
+
+State 106
+
+  121 foreach_stat: FOREACH ID • @8 IN ID @9 DO stat_list END
+
+    $default  reduce using rule 119 (@8)
+
+    @8  go to state 149
+
+
+State 107
+
+   95 run_section: RUN stat_list END •
+
+    $default  reduce using rule 95 (run_section)
+
+
+State 108
+
+   97 stat_list: stat ';' • stat_list
+   98          | stat ';' •
+
+    ID          shift, and go to state 49
+    IF          shift, and go to state 50
+    READ_TOKEN  shift, and go to state 51
+    WRITE       shift, and go to state 52
+    WHILE       shift, and go to state 53
+    FOREACH     shift, and go to state 54
+
+    $default  reduce using rule 98 (stat_list)
+
+    stat_list     go to state 150
+    stat          go to state 56
+    read_stat     go to state 57
+    write_stat    go to state 58
+    assign_stat   go to state 59
+    lhs           go to state 60
+    indexing      go to state 61
+    if_stat       go to state 62
+    while_stat    go to state 63
+    foreach_stat  go to state 64
+
+
+State 109
+
+  107 assign_stat: lhs ASSIGN • expr
+
+    INT          shift, and go to state 73
+    REAL         shift, and go to state 74
+    ID           shift, and go to state 75
+    INTCONST     shift, and go to state 76
+    REALCONST    shift, and go to state 77
+    STRCONST     shift, and go to state 78
+    BOOLCONST    shift, and go to state 79
+    IF           shift, and go to state 80
+    NOT          shift, and go to state 81
+    MINUSSIGN    shift, and go to state 82
+    EMPTY_TOKEN  shift, and go to state 83
+    HEAD_TOKEN   shift, and go to state 84
+    TAIL_TOKEN   shift, and go to state 85
+    '{'          shift, and go to state 86
+    '['          shift, and go to state 87
+    '('          shift, and go to state 88
+    '|'          shift, and go to state 89
+
+    expr                go to state 151
+    bool_term           go to state 91
+    comp_term           go to state 92
+    term                go to state 93
+    factor              go to state 94
+    unary_op            go to state 95
+    built_in            go to state 96
+    atomic_constant     go to state 97
+    record_constructor  go to state 98
+    cond_expr           go to state 99
+    func_call           go to state 100
+    array_constructor   go to state 101
+    lhs                 go to state 102
+    indexing            go to state 61
+
+
+State 110
+
+   22 atomic_decl: ID @2 ':' • atomic_type
+
+    INT     shift, and go to state 20
+    STRING  shift, and go to state 21
+    BOOL    shift, and go to state 22
+    REAL    shift, and go to state 23
+    ID      shift, and go to state 24
+
+    atomic_type  go to state 152
+
+
+State 111
+
+   19 atomic_decl_list: atomic_decl ',' atomic_decl_list •
+
+    $default  reduce using rule 19 (atomic_decl_list)
+
+
+State 112
+
+   42 formal_decl: ID • @4 ':' type
+
+    $default  reduce using rule 41 (@4)
+
+    @4  go to state 153
+
+
+State 113
+
+   36 fun_decl: ID @3 '(' opt_formal_decl_list • ')' ':' type expr END
+
+    ')'  shift, and go to state 154
+
+
+State 114
+
+   37 opt_formal_decl_list: formal_decl_list •
+
+    $default  reduce using rule 37 (opt_formal_decl_list)
+
+
+State 115
+
+   39 formal_decl_list: formal_decl • ',' formal_decl_list
+   40                 | formal_decl •
+
+    ','  shift, and go to state 155
+
+    $default  reduce using rule 40 (formal_decl_list)
+
+
+State 116
+
+  111 opt_fielding: '.' • ID
+
+    ID  shift, and go to state 156
+
+
+State 117
+
+  109 lhs: ID @6 opt_fielding •
+
+    $default  reduce using rule 109 (lhs)
+
+
+State 118
+
+  114 indexing: ID @7 '[' • expr ']' opt_fielding
+
+    INT          shift, and go to state 73
+    REAL         shift, and go to state 74
+    ID           shift, and go to state 75
+    INTCONST     shift, and go to state 76
+    REALCONST    shift, and go to state 77
+    STRCONST     shift, and go to state 78
+    BOOLCONST    shift, and go to state 79
+    IF           shift, and go to state 80
+    NOT          shift, and go to state 81
+    MINUSSIGN    shift, and go to state 82
+    EMPTY_TOKEN  shift, and go to state 83
+    HEAD_TOKEN   shift, and go to state 84
+    TAIL_TOKEN   shift, and go to state 85
+    '{'          shift, and go to state 86
+    '['          shift, and go to state 87
+    '('          shift, and go to state 88
+    '|'          shift, and go to state 89
+
+    expr                go to state 157
+    bool_term           go to state 91
+    comp_term           go to state 92
+    term                go to state 93
+    factor              go to state 94
+    unary_op            go to state 95
+    built_in            go to state 96
+    atomic_constant     go to state 97
+    record_constructor  go to state 98
+    cond_expr           go to state 99
+    func_call           go to state 100
+    array_constructor   go to state 101
+    lhs                 go to state 102
+    indexing            go to state 61
+
+
+State 119
+
+   91 func_call: ID @5 • '(' opt_expr_list ')'
+
+    '('  shift, and go to state 158
+
+
+State 120
+
+   43 expr: expr • bool_op bool_term
+   89 cond_expr: IF expr • THEN expr ELSE expr END
+
+    THEN  shift, and go to state 159
+    AND   shift, and go to state 128
+    OR    shift, and go to state 129
+
+    bool_op  go to state 130
+
+
+State 121
+
+   43 expr: expr • bool_op bool_term
+   87 expr_list: expr • ',' expr_list
+   88          | expr •
+
+    AND  shift, and go to state 128
+    OR   shift, and go to state 129
+    ','  shift, and go to state 160
+
+    $default  reduce using rule 88 (expr_list)
+
+    bool_op  go to state 130
+
+
+State 122
+
+   86 record_constructor: '{' expr_list • '}'
+
+    '}'  shift, and go to state 161
+
+
+State 123
+
+   92 opt_expr_list: expr_list •
+
+    $default  reduce using rule 92 (opt_expr_list)
+
+
+State 124
+
+   94 array_constructor: '[' opt_expr_list • ']'
+
+    ']'  shift, and go to state 162
+
+
+State 125
+
+   43 expr: expr • bool_op bool_term
+   66 factor: '(' expr • ')'
+
+    AND  shift, and go to state 128
+    OR   shift, and go to state 129
+    ')'  shift, and go to state 163
+
+    bool_op  go to state 130
+
+
+State 126
+
+   43 expr: expr • bool_op bool_term
+   67 factor: '|' expr • '|'
+
+    AND  shift, and go to state 128
+    OR   shift, and go to state 129
+    '|'  shift, and go to state 164
+
+    bool_op  go to state 130
+
+
+State 127
+
+  115 if_stat: IF expr THEN • stat_list else_part END
+
+    ID          shift, and go to state 49
+    IF          shift, and go to state 50
+    READ_TOKEN  shift, and go to state 51
+    WRITE       shift, and go to state 52
+    WHILE       shift, and go to state 53
+    FOREACH     shift, and go to state 54
+
+    stat_list     go to state 165
+    stat          go to state 56
+    read_stat     go to state 57
+    write_stat    go to state 58
+    assign_stat   go to state 59
+    lhs           go to state 60
+    indexing      go to state 61
+    if_stat       go to state 62
+    while_stat    go to state 63
+    foreach_stat  go to state 64
+
+
+State 128
+
+   46 bool_op: AND •
+
+    $default  reduce using rule 46 (bool_op)
+
+
+State 129
+
+   45 bool_op: OR •
+
+    $default  reduce using rule 45 (bool_op)
+
+
+State 130
+
+   43 expr: expr bool_op • bool_term
+
+    INT          shift, and go to state 73
+    REAL         shift, and go to state 74
+    ID           shift, and go to state 75
+    INTCONST     shift, and go to state 76
+    REALCONST    shift, and go to state 77
+    STRCONST     shift, and go to state 78
+    BOOLCONST    shift, and go to state 79
+    IF           shift, and go to state 80
+    NOT          shift, and go to state 81
+    MINUSSIGN    shift, and go to state 82
+    EMPTY_TOKEN  shift, and go to state 83
+    HEAD_TOKEN   shift, and go to state 84
+    TAIL_TOKEN   shift, and go to state 85
+    '{'          shift, and go to state 86
+    '['          shift, and go to state 87
+    '('          shift, and go to state 88
+    '|'          shift, and go to state 89
+
+    bool_term           go to state 166
+    comp_term           go to state 92
+    term                go to state 93
+    factor              go to state 94
+    unary_op            go to state 95
+    built_in            go to state 96
+    atomic_constant     go to state 97
+    record_constructor  go to state 98
+    cond_expr           go to state 99
+    func_call           go to state 100
+    array_constructor   go to state 101
+    lhs                 go to state 102
+    indexing            go to state 61
+
+
+State 131
+
+   55 comp_op: IN •
+
+    $default  reduce using rule 55 (comp_op)
+
+
+State 132
+
+   60 add_op: CONCAT •
+
+    $default  reduce using rule 60 (add_op)
+
+
+State 133
+
+   49 comp_op: EQUAL •
+
+    $default  reduce using rule 49 (comp_op)
+
+
+State 134
+
+   50 comp_op: NEQUAL •
+
+    $default  reduce using rule 50 (comp_op)
+
+
+State 135
+
+   51 comp_op: GT •
+
+    $default  reduce using rule 51 (comp_op)
+
+
+State 136
+
+   52 comp_op: GE •
+
+    $default  reduce using rule 52 (comp_op)
+
+
+State 137
+
+   53 comp_op: LE •
+
+    $default  reduce using rule 53 (comp_op)
+
+
+State 138
+
+   54 comp_op: LT •
+
+    $default  reduce using rule 54 (comp_op)
+
+
+State 139
+
+   58 add_op: PLUS •
+
+    $default  reduce using rule 58 (add_op)
+
+
+State 140
+
+   59 add_op: MINUS •
+
+    $default  reduce using rule 59 (add_op)
+
+
+State 141
+
+   47 bool_term: comp_term comp_op • comp_term
+
+    INT          shift, and go to state 73
+    REAL         shift, and go to state 74
+    ID           shift, and go to state 75
+    INTCONST     shift, and go to state 76
+    REALCONST    shift, and go to state 77
+    STRCONST     shift, and go to state 78
+    BOOLCONST    shift, and go to state 79
+    IF           shift, and go to state 80
+    NOT          shift, and go to state 81
+    MINUSSIGN    shift, and go to state 82
+    EMPTY_TOKEN  shift, and go to state 83
+    HEAD_TOKEN   shift, and go to state 84
+    TAIL_TOKEN   shift, and go to state 85
+    '{'          shift, and go to state 86
+    '['          shift, and go to state 87
+    '('          shift, and go to state 88
+    '|'          shift, and go to state 89
+
+    comp_term           go to state 167
+    term                go to state 93
+    factor              go to state 94
+    unary_op            go to state 95
+    built_in            go to state 96
+    atomic_constant     go to state 97
+    record_constructor  go to state 98
+    cond_expr           go to state 99
+    func_call           go to state 100
+    array_constructor   go to state 101
+    lhs                 go to state 102
+    indexing            go to state 61
+
+
+State 142
+
+   56 comp_term: comp_term add_op • term
+
+    INT          shift, and go to state 73
+    REAL         shift, and go to state 74
+    ID           shift, and go to state 75
+    INTCONST     shift, and go to state 76
+    REALCONST    shift, and go to state 77
+    STRCONST     shift, and go to state 78
+    BOOLCONST    shift, and go to state 79
+    IF           shift, and go to state 80
+    NOT          shift, and go to state 81
+    MINUSSIGN    shift, and go to state 82
+    EMPTY_TOKEN  shift, and go to state 83
+    HEAD_TOKEN   shift, and go to state 84
+    TAIL_TOKEN   shift, and go to state 85
+    '{'          shift, and go to state 86
+    '['          shift, and go to state 87
+    '('          shift, and go to state 88
+    '|'          shift, and go to state 89
+
+    term                go to state 168
+    factor              go to state 94
+    unary_op            go to state 95
+    built_in            go to state 96
+    atomic_constant     go to state 97
+    record_constructor  go to state 98
+    cond_expr           go to state 99
+    func_call           go to state 100
+    array_constructor   go to state 101
+    lhs                 go to state 102
+    indexing            go to state 61
+
+
+State 143
+
+   63 mul_op: MUL •
+
+    $default  reduce using rule 63 (mul_op)
+
+
+State 144
+
+   64 mul_op: DIVIDE •
+
+    $default  reduce using rule 64 (mul_op)
+
+
+State 145
+
+   61 term: term mul_op • factor
+
+    INT          shift, and go to state 73
+    REAL         shift, and go to state 74
+    ID           shift, and go to state 75
+    INTCONST     shift, and go to state 76
+    REALCONST    shift, and go to state 77
+    STRCONST     shift, and go to state 78
+    BOOLCONST    shift, and go to state 79
+    IF           shift, and go to state 80
+    NOT          shift, and go to state 81
+    MINUSSIGN    shift, and go to state 82
+    EMPTY_TOKEN  shift, and go to state 83
+    HEAD_TOKEN   shift, and go to state 84
+    TAIL_TOKEN   shift, and go to state 85
+    '{'          shift, and go to state 86
+    '['          shift, and go to state 87
+    '('          shift, and go to state 88
+    '|'          shift, and go to state 89
+
+    factor              go to state 169
+    unary_op            go to state 95
+    built_in            go to state 96
+    atomic_constant     go to state 97
+    record_constructor  go to state 98
+    cond_expr           go to state 99
+    func_call           go to state 100
+    array_constructor   go to state 101
+    lhs                 go to state 102
+    indexing            go to state 61
+
+
+State 146
+
+   65 factor: unary_op factor •
+
+    $default  reduce using rule 65 (factor)
+
+
+State 147
+
+   69 factor: built_in '(' • expr ')'
+
+    INT          shift, and go to state 73
+    REAL         shift, and go to state 74
+    ID           shift, and go to state 75
+    INTCONST     shift, and go to state 76
+    REALCONST    shift, and go to state 77
+    STRCONST     shift, and go to state 78
+    BOOLCONST    shift, and go to state 79
+    IF           shift, and go to state 80
+    NOT          shift, and go to state 81
+    MINUSSIGN    shift, and go to state 82
+    EMPTY_TOKEN  shift, and go to state 83
+    HEAD_TOKEN   shift, and go to state 84
+    TAIL_TOKEN   shift, and go to state 85
+    '{'          shift, and go to state 86
+    '['          shift, and go to state 87
+    '('          shift, and go to state 88
+    '|'          shift, and go to state 89
+
+    expr                go to state 170
+    bool_term           go to state 91
+    comp_term           go to state 92
+    term                go to state 93
+    factor              go to state 94
+    unary_op            go to state 95
+    built_in            go to state 96
+    atomic_constant     go to state 97
+    record_constructor  go to state 98
+    cond_expr           go to state 99
+    func_call           go to state 100
+    array_constructor   go to state 101
+    lhs                 go to state 102
+    indexing            go to state 61
+
+
+State 148
+
+  118 while_stat: WHILE expr DO • stat_list END
+
+    ID          shift, and go to state 49
+    IF          shift, and go to state 50
+    READ_TOKEN  shift, and go to state 51
+    WRITE       shift, and go to state 52
+    WHILE       shift, and go to state 53
+    FOREACH     shift, and go to state 54
+
+    stat_list     go to state 171
+    stat          go to state 56
+    read_stat     go to state 57
+    write_stat    go to state 58
+    assign_stat   go to state 59
+    lhs           go to state 60
+    indexing      go to state 61
+    if_stat       go to state 62
+    while_stat    go to state 63
+    foreach_stat  go to state 64
+
+
+State 149
+
+  121 foreach_stat: FOREACH ID @8 • IN ID @9 DO stat_list END
+
+    IN  shift, and go to state 172
+
+
+State 150
+
+   97 stat_list: stat ';' stat_list •
+
+    $default  reduce using rule 97 (stat_list)
+
+
+State 151
+
+   43 expr: expr • bool_op bool_term
+  107 assign_stat: lhs ASSIGN expr •
+
+    AND  shift, and go to state 128
+    OR   shift, and go to state 129
+
+    $default  reduce using rule 107 (assign_stat)
+
+    bool_op  go to state 130
+
+
+State 152
+
+   22 atomic_decl: ID @2 ':' atomic_type •
+
+    $default  reduce using rule 22 (atomic_decl)
+
+
+State 153
+
+   42 formal_decl: ID @4 • ':' type
+
+    ':'  shift, and go to state 173
+
+
+State 154
+
+   36 fun_decl: ID @3 '(' opt_formal_decl_list ')' • ':' type expr END
+
+    ':'  shift, and go to state 174
+
+
+State 155
+
+   39 formal_decl_list: formal_decl ',' • formal_decl_list
+
+    ID  shift, and go to state 112
+
+    formal_decl_list  go to state 175
+    formal_decl       go to state 115
+
+
+State 156
+
+  111 opt_fielding: '.' ID •
+
+    $default  reduce using rule 111 (opt_fielding)
+
+
+State 157
+
+   43 expr: expr • bool_op bool_term
+  114 indexing: ID @7 '[' expr • ']' opt_fielding
+
+    AND  shift, and go to state 128
+    OR   shift, and go to state 129
+    ']'  shift, and go to state 176
+
+    bool_op  go to state 130
+
+
+State 158
+
+   91 func_call: ID @5 '(' • opt_expr_list ')'
+
+    INT          shift, and go to state 73
+    REAL         shift, and go to state 74
+    ID           shift, and go to state 75
+    INTCONST     shift, and go to state 76
+    REALCONST    shift, and go to state 77
+    STRCONST     shift, and go to state 78
+    BOOLCONST    shift, and go to state 79
+    IF           shift, and go to state 80
+    NOT          shift, and go to state 81
+    MINUSSIGN    shift, and go to state 82
+    EMPTY_TOKEN  shift, and go to state 83
+    HEAD_TOKEN   shift, and go to state 84
+    TAIL_TOKEN   shift, and go to state 85
+    '{'          shift, and go to state 86
+    '['          shift, and go to state 87
+    '('          shift, and go to state 88
+    '|'          shift, and go to state 89
+
+    $default  reduce using rule 93 (opt_expr_list)
+
+    expr                go to state 121
+    bool_term           go to state 91
+    comp_term           go to state 92
+    term                go to state 93
+    factor              go to state 94
+    unary_op            go to state 95
+    built_in            go to state 96
+    atomic_constant     go to state 97
+    record_constructor  go to state 98
+    expr_list           go to state 123
+    cond_expr           go to state 99
+    func_call           go to state 100
+    opt_expr_list       go to state 177
+    array_constructor   go to state 101
+    lhs                 go to state 102
+    indexing            go to state 61
+
+
+State 159
+
+   89 cond_expr: IF expr THEN • expr ELSE expr END
+
+    INT          shift, and go to state 73
+    REAL         shift, and go to state 74
+    ID           shift, and go to state 75
+    INTCONST     shift, and go to state 76
+    REALCONST    shift, and go to state 77
+    STRCONST     shift, and go to state 78
+    BOOLCONST    shift, and go to state 79
+    IF           shift, and go to state 80
+    NOT          shift, and go to state 81
+    MINUSSIGN    shift, and go to state 82
+    EMPTY_TOKEN  shift, and go to state 83
+    HEAD_TOKEN   shift, and go to state 84
+    TAIL_TOKEN   shift, and go to state 85
+    '{'          shift, and go to state 86
+    '['          shift, and go to state 87
+    '('          shift, and go to state 88
+    '|'          shift, and go to state 89
+
+    expr                go to state 178
+    bool_term           go to state 91
+    comp_term           go to state 92
+    term                go to state 93
+    factor              go to state 94
+    unary_op            go to state 95
+    built_in            go to state 96
+    atomic_constant     go to state 97
+    record_constructor  go to state 98
+    cond_expr           go to state 99
+    func_call           go to state 100
+    array_constructor   go to state 101
+    lhs                 go to state 102
+    indexing            go to state 61
+
+
+State 160
+
+   87 expr_list: expr ',' • expr_list
+
+    INT          shift, and go to state 73
+    REAL         shift, and go to state 74
+    ID           shift, and go to state 75
+    INTCONST     shift, and go to state 76
+    REALCONST    shift, and go to state 77
+    STRCONST     shift, and go to state 78
+    BOOLCONST    shift, and go to state 79
+    IF           shift, and go to state 80
+    NOT          shift, and go to state 81
+    MINUSSIGN    shift, and go to state 82
+    EMPTY_TOKEN  shift, and go to state 83
+    HEAD_TOKEN   shift, and go to state 84
+    TAIL_TOKEN   shift, and go to state 85
+    '{'          shift, and go to state 86
+    '['          shift, and go to state 87
+    '('          shift, and go to state 88
+    '|'          shift, and go to state 89
+
+    expr                go to state 121
+    bool_term           go to state 91
+    comp_term           go to state 92
+    term                go to state 93
+    factor              go to state 94
+    unary_op            go to state 95
+    built_in            go to state 96
+    atomic_constant     go to state 97
+    record_constructor  go to state 98
+    expr_list           go to state 179
+    cond_expr           go to state 99
+    func_call           go to state 100
+    array_constructor   go to state 101
+    lhs                 go to state 102
+    indexing            go to state 61
+
+
+State 161
+
+   86 record_constructor: '{' expr_list '}' •
+
+    $default  reduce using rule 86 (record_constructor)
+
+
+State 162
+
+   94 array_constructor: '[' opt_expr_list ']' •
+
+    $default  reduce using rule 94 (array_constructor)
+
+
+State 163
+
+   66 factor: '(' expr ')' •
+
+    $default  reduce using rule 66 (factor)
+
+
+State 164
+
+   67 factor: '|' expr '|' •
+
+    $default  reduce using rule 67 (factor)
+
+
+State 165
+
+  115 if_stat: IF expr THEN stat_list • else_part END
+
+    ELSE  shift, and go to state 180
+
+    $default  reduce using rule 117 (else_part)
+
+    else_part  go to state 181
+
+
+State 166
+
+   43 expr: expr bool_op bool_term •
+
+    $default  reduce using rule 43 (expr)
+
+
+State 167
+
+   47 bool_term: comp_term comp_op comp_term •
+   56 comp_term: comp_term • add_op term
+
+    CONCAT  shift, and go to state 132
+    PLUS    shift, and go to state 139
+    MINUS   shift, and go to state 140
+
+    $default  reduce using rule 47 (bool_term)
+
+    add_op  go to state 142
+
+
+State 168
+
+   56 comp_term: comp_term add_op term •
+   61 term: term • mul_op factor
+
+    MUL     shift, and go to state 143
+    DIVIDE  shift, and go to state 144
+
+    $default  reduce using rule 56 (comp_term)
+
+    mul_op  go to state 145
+
+
+State 169
+
+   61 term: term mul_op factor •
+
+    $default  reduce using rule 61 (term)
+
+
+State 170
+
+   43 expr: expr • bool_op bool_term
+   69 factor: built_in '(' expr • ')'
+
+    AND  shift, and go to state 128
+    OR   shift, and go to state 129
+    ')'  shift, and go to state 182
+
+    bool_op  go to state 130
+
+
+State 171
+
+  118 while_stat: WHILE expr DO stat_list • END
+
+    END  shift, and go to state 183
+
+
+State 172
+
+  121 foreach_stat: FOREACH ID @8 IN • ID @9 DO stat_list END
+
+    ID  shift, and go to state 184
+
+
+State 173
+
+   42 formal_decl: ID @4 ':' • type
+
+    INT     shift, and go to state 20
+    STRING  shift, and go to state 21
+    BOOL    shift, and go to state 22
+    REAL    shift, and go to state 23
+    ID      shift, and go to state 24
+    '{'     shift, and go to state 25
+    '['     shift, and go to state 26
+
+    type         go to state 185
+    atomic_type  go to state 28
+    record_type  go to state 29
+    array_type   go to state 30
+
+
+State 174
+
+   36 fun_decl: ID @3 '(' opt_formal_decl_list ')' ':' • type expr END
+
+    INT     shift, and go to state 20
+    STRING  shift, and go to state 21
+    BOOL    shift, and go to state 22
+    REAL    shift, and go to state 23
+    ID      shift, and go to state 24
+    '{'     shift, and go to state 25
+    '['     shift, and go to state 26
+
+    type         go to state 186
+    atomic_type  go to state 28
+    record_type  go to state 29
+    array_type   go to state 30
+
+
+State 175
+
+   39 formal_decl_list: formal_decl ',' formal_decl_list •
+
+    $default  reduce using rule 39 (formal_decl_list)
+
+
+State 176
+
+  114 indexing: ID @7 '[' expr ']' • opt_fielding
+
+    '.'  shift, and go to state 116
+
+    $default  reduce using rule 112 (opt_fielding)
+
+    opt_fielding  go to state 187
+
+
+State 177
+
+   91 func_call: ID @5 '(' opt_expr_list • ')'
+
+    ')'  shift, and go to state 188
+
+
+State 178
+
+   43 expr: expr • bool_op bool_term
+   89 cond_expr: IF expr THEN expr • ELSE expr END
+
+    ELSE  shift, and go to state 189
+    AND   shift, and go to state 128
+    OR    shift, and go to state 129
+
+    bool_op  go to state 130
+
+
+State 179
+
+   87 expr_list: expr ',' expr_list •
+
+    $default  reduce using rule 87 (expr_list)
+
+
+State 180
+
+  116 else_part: ELSE • stat_list
+
+    ID          shift, and go to state 49
+    IF          shift, and go to state 50
+    READ_TOKEN  shift, and go to state 51
+    WRITE       shift, and go to state 52
+    WHILE       shift, and go to state 53
+    FOREACH     shift, and go to state 54
+
+    stat_list     go to state 190
+    stat          go to state 56
+    read_stat     go to state 57
+    write_stat    go to state 58
+    assign_stat   go to state 59
+    lhs           go to state 60
+    indexing      go to state 61
+    if_stat       go to state 62
+    while_stat    go to state 63
+    foreach_stat  go to state 64
+
+
+State 181
+
+  115 if_stat: IF expr THEN stat_list else_part • END
+
+    END  shift, and go to state 191
+
+
+State 182
+
+   69 factor: built_in '(' expr ')' •
+
+    $default  reduce using rule 69 (factor)
+
+
+State 183
+
+  118 while_stat: WHILE expr DO stat_list END •
+
+    $default  reduce using rule 118 (while_stat)
+
+
+State 184
+
+  121 foreach_stat: FOREACH ID @8 IN ID • @9 DO stat_list END
+
+    $default  reduce using rule 120 (@9)
+
+    @9  go to state 192
+
+
+State 185
+
+   42 formal_decl: ID @4 ':' type •
+
+    $default  reduce using rule 42 (formal_decl)
+
+
+State 186
+
+   36 fun_decl: ID @3 '(' opt_formal_decl_list ')' ':' type • expr END
+
+    INT          shift, and go to state 73
+    REAL         shift, and go to state 74
+    ID           shift, and go to state 75
+    INTCONST     shift, and go to state 76
+    REALCONST    shift, and go to state 77
+    STRCONST     shift, and go to state 78
+    BOOLCONST    shift, and go to state 79
+    IF           shift, and go to state 80
+    NOT          shift, and go to state 81
+    MINUSSIGN    shift, and go to state 82
+    EMPTY_TOKEN  shift, and go to state 83
+    HEAD_TOKEN   shift, and go to state 84
+    TAIL_TOKEN   shift, and go to state 85
+    '{'          shift, and go to state 86
+    '['          shift, and go to state 87
+    '('          shift, and go to state 88
+    '|'          shift, and go to state 89
+
+    expr                go to state 193
+    bool_term           go to state 91
+    comp_term           go to state 92
+    term                go to state 93
+    factor              go to state 94
+    unary_op            go to state 95
+    built_in            go to state 96
+    atomic_constant     go to state 97
+    record_constructor  go to state 98
+    cond_expr           go to state 99
+    func_call           go to state 100
+    array_constructor   go to state 101
+    lhs                 go to state 102
+    indexing            go to state 61
+
+
+State 187
+
+  114 indexing: ID @7 '[' expr ']' opt_fielding •
+
+    $default  reduce using rule 114 (indexing)
+
+
+State 188
+
+   91 func_call: ID @5 '(' opt_expr_list ')' •
+
+    $default  reduce using rule 91 (func_call)
+
+
+State 189
+
+   89 cond_expr: IF expr THEN expr ELSE • expr END
+
+    INT          shift, and go to state 73
+    REAL         shift, and go to state 74
+    ID           shift, and go to state 75
+    INTCONST     shift, and go to state 76
+    REALCONST    shift, and go to state 77
+    STRCONST     shift, and go to state 78
+    BOOLCONST    shift, and go to state 79
+    IF           shift, and go to state 80
+    NOT          shift, and go to state 81
+    MINUSSIGN    shift, and go to state 82
+    EMPTY_TOKEN  shift, and go to state 83
+    HEAD_TOKEN   shift, and go to state 84
+    TAIL_TOKEN   shift, and go to state 85
+    '{'          shift, and go to state 86
+    '['          shift, and go to state 87
+    '('          shift, and go to state 88
+    '|'          shift, and go to state 89
+
+    expr                go to state 194
+    bool_term           go to state 91
+    comp_term           go to state 92
+    term                go to state 93
+    factor              go to state 94
+    unary_op            go to state 95
+    built_in            go to state 96
+    atomic_constant     go to state 97
+    record_constructor  go to state 98
+    cond_expr           go to state 99
+    func_call           go to state 100
+    array_constructor   go to state 101
+    lhs                 go to state 102
+    indexing            go to state 61
+
+
+State 190
+
+  116 else_part: ELSE stat_list •
+
+    $default  reduce using rule 116 (else_part)
+
+
+State 191
+
+  115 if_stat: IF expr THEN stat_list else_part END •
+
+    $default  reduce using rule 115 (if_stat)
+
+
+State 192
+
+  121 foreach_stat: FOREACH ID @8 IN ID @9 • DO stat_list END
+
+    DO  shift, and go to state 195
+
+
+State 193
+
+   36 fun_decl: ID @3 '(' opt_formal_decl_list ')' ':' type expr • END
+   43 expr: expr • bool_op bool_term
+
+    END  shift, and go to state 196
+    AND  shift, and go to state 128
+    OR   shift, and go to state 129
+
+    bool_op  go to state 130
+
+
+State 194
+
+   43 expr: expr • bool_op bool_term
+   89 cond_expr: IF expr THEN expr ELSE expr • END
+
+    END  shift, and go to state 197
+    AND  shift, and go to state 128
+    OR   shift, and go to state 129
+
+    bool_op  go to state 130
+
+
+State 195
+
+  121 foreach_stat: FOREACH ID @8 IN ID @9 DO • stat_list END
+
+    ID          shift, and go to state 49
+    IF          shift, and go to state 50
+    READ_TOKEN  shift, and go to state 51
+    WRITE       shift, and go to state 52
+    WHILE       shift, and go to state 53
+    FOREACH     shift, and go to state 54
+
+    stat_list     go to state 198
+    stat          go to state 56
+    read_stat     go to state 57
+    write_stat    go to state 58
+    assign_stat   go to state 59
+    lhs           go to state 60
+    indexing      go to state 61
+    if_stat       go to state 62
+    while_stat    go to state 63
+    foreach_stat  go to state 64
+
+
+State 196
+
+   36 fun_decl: ID @3 '(' opt_formal_decl_list ')' ':' type expr END •
+
+    $default  reduce using rule 36 (fun_decl)
+
+
+State 197
+
+   89 cond_expr: IF expr THEN expr ELSE expr END •
+
+    $default  reduce using rule 89 (cond_expr)
+
+
+State 198
+
+  121 foreach_stat: FOREACH ID @8 IN ID @9 DO stat_list • END
+
+    END  shift, and go to state 199
+
+
+State 199
+
+  121 foreach_stat: FOREACH ID @8 IN ID @9 DO stat_list END •
+
+    $default  reduce using rule 121 (foreach_stat)

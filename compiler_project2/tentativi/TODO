@@ -1,0 +1,67 @@
+-------SYMBOL TABLE
+
+2V- come fare i controlli su id per evitare RRay di array o struct di array
+3-MATHEXPR: gestire coercizioni di tipo real int
+4V-in tutte le expr non hai controllato gli elementi di vettori o di record
+  ___non cè bisogno fatto da lhs
+
+
+7-come controllo che la variabile letta da read corrisponda al tipo della  variabile
+  a cui viene assegnata? più che altro è una lettura da input secondo me il tipo non è da
+  controllare qui->bisgogna vedere solamente in gen code o altro sopra come è il modo
+  migliore per gestirla
+
+10V-come gestisco i vettori vuoti?????(FOSRSE ANCORA UN PO BUGGATI)
+
+
+12->come gestisco l'id del foreach io lo tratto come un parametro ma il suo scope?
+13->COME GESTIRE LO SCOPE DELLE VARIABILI->a livello di stable funziona ma non so a liv gen code
+14->--occhio ai casi annidati e soprattuto ai foreach annidati
+
+
+16--negli expr non puoi fare assegnamenti ma nelle assign stat si ricordati di sistemarla
+    per tenere conto delle coercizioni di tipo
+
+17?-- controllare che lookup quando viene usato per cercare un type trovi effettivamente
+     un type o non so come funzioni
+18-- coercizione--->lasciamo a dopo
+21-- per fare le coercizioni devo propagare all'indietro-> per ora mi limiterei solo alle mathexpr
+22V- finire di sistemare le const
+23V- controllare se nell'if stat while e forech ho trattato le statlist e non solo una
+24-- far stampare la tabella in modo più ordinato
+25--aggiungere il controllo che dentro il corpo della funzione valgono solo le VAR dichiarate
+     nel corpo della stessa
+26V- aggiungere controllo che un record non può avere due campi con lo stesso nome
+-----------yacc
+1-aggiungere precedenze come hai visto su chat gpt
+
+-----------------gen code
+aggiungere un controllo efficace sulle
+2V-finire di sistemare gencode di write e read
+3V-ma nella lhs è sempre una generazione di codice che va caricato o il valore o l'indirizzo,
+   potrei usare una flag tanto mi sa che l'assegnamento avviene solo per l'assign stat mentre per
+   il resto è sempre un caricamento del valore.
+4V-genlhs non è completo
+5- non ho ancora capito come generare lo scope dinamico delle funzioni
+ (anche perchè altri scope dinamici non mi vengono visto che le variabili è
+  possibile definirle solo globalmente)
+6- gestione della annidazione dei cicli for
+7v- come si gestisce il fatto che devo rivalutare il type della expr in comp
+8V- CONTRUCTOR:ci penserà la mv a gestire il vettore vuoto io ho semplicemente
+    fatto 0 0 0 per tt gli argomenti
+9-- MATHEXPR: coercizioni
+10V- FUNC CALL: fare una funzione che permette alla fine di compilazione del codice di
+                trovare tutti i jump e prendere la riga giusta
+11--FUNC DEF: come devo trattarli i parametri, se non devo scriverli a cosa serviva
+               salvarsi il loro oid
+12--FOREACH finire di gestire la giusta scelta di var dentro gen foreach
+13-- funzioni di stampa del file->fare for
+                                 ->fare differnza quando arg è stringa in writ  e red
+14V- controllare writ (il concatena stringa)
+15v- controllare pack per gli array
+16v- controllare locs perchè si attiva al posto della funcall
+17v- read da problemi
+pppppppppppppppppp
+JUMP secondo me è sbagliata controllare
+symbol table non controlla che nel chiamare una funzione usando tycmp da vero anche se passi un
+intero e lui si aspetta un array di interi->rintroddurre controllo con 0-1-2

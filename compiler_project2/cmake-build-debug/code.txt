@@ -1,0 +1,20 @@
+Code size: 18
+
+Address: 0	Op: 5	
+Address: 0	Op: 40	Arg1: 4	Arg2: 1
+Address: 0	Op: 54	Arg3: s
+Address: 0	Op: 28	Arg3: "Sequenza di numeri ordinata:\n"
+Address: 0	Op: 28	Arg3: ordina
+Address: 0	Op: 17	
+Address: 0	Op: 54	Arg3: s
+Address: 0	Op: 28	Arg3: "Sequenza di numeri ordinata:\n"
+Address: 0	Op: 28	Arg3: ordina
+Address: 0	Op: CODE	
+Address: 0	Op: NEWO	Arg1: 4	Arg2: 1
+Address: 0	Op: WRIT	Arg3: s
+Address: 0	Op: LOCS	Arg3: "Sequenza di numeri ordinata:\n"
+Address: 0	Op: LOCS	Arg3: ordina
+Address: 0	Op: HALT	
+Address: 0	Op: WRIT	Arg3: s
+Address: 0	Op: LOCS	Arg3: "Sequenza di numeri ordinata:\n"
+Address: 0	Op: LOCS	Arg3: ordina
