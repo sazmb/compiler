@@ -1,0 +1,9 @@
+# ninja log v6
+458	1667	7526206804639470	CMakeFiles/compiler_project2.dir/main.c.obj	684fb7a135c01539
+201	2588	7572628841732397	CMakeFiles/compiler_project2.dir/lexer.c.obj	cde090e9438c0950
+2590	2958	7572628865622088	CMakeFiles/compiler_project2.dir/parser.c.obj	954ade56abb23802
+2415	2713	7507108882498552	CMakeFiles/compiler_project2.dir/tree.c.obj	2e31b0dab6778425
+1358	1813	7570187726137705	CMakeFiles/compiler_project2.dir/symbolTable.c.obj	36d624e055e4b214
+122	1226	7572654989412845	CMakeFiles/compiler_project2.dir/genCode.c.obj	3c92c559f8921bff
+1264	2298	7572655001109395	compiler_project2.exe	6346636ac6a950f6
+21	1496	7572712250425253	build.ninja	3926c6e6be0a5371
