@@ -1,8 +1,9 @@
-types
-    arr = [int];
 variables
-    numbers : arr;
+    x, y : int;
 run
-     numbers = [1, 2, 3, 4];
-        write numbers[2];
+    x = 3;
+    y = 4;
+    if x + y == 7 then
+        write "Sum is 7";
+    end;
 end

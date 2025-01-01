@@ -18,3 +18,10 @@
 1623	2015	7572765905339463	CMakeFiles/compiler_project2.dir/parser.c.obj	d348ac5c2f000e2d
 2015	2870	7572765909264413	CMakeFiles/compiler_project2.dir/symbolTable.c.obj	c919c00bda8e0ae6
 2871	3465	7572765917809902	compiler_project2.exe	6346636ac6a950f6
+165	1390	7572876779767695	CMakeFiles/compiler_project2.dir/lexer.c.obj	9472a8f684e10e36
+1392	2162	7572876792025672	CMakeFiles/compiler_project2.dir/parser.c.obj	d348ac5c2f000e2d
+2163	2617	7572876799725418	compiler_project2.exe	6346636ac6a950f6
+327	2350	7574557820312245	CMakeFiles/compiler_project2.dir/lexer.c.obj	9472a8f684e10e36
+2352	2891	7574557840552378	CMakeFiles/compiler_project2.dir/parser.c.obj	d348ac5c2f000e2d
+2891	4780	7574557845932330	CMakeFiles/compiler_project2.dir/symbolTable.c.obj	c919c00bda8e0ae6
+4781	6863	7574557864833016	compiler_project2.exe	6346636ac6a950f6
