@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Ciclo per creare 50 file .sh
-for i in {1..50}; do
+for i in {61..70}; do
     filename="script$i.sh"
 
     # Creazione del file e aggiunta di uno shebang per Bash

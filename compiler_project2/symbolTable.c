@@ -166,22 +166,32 @@ Ptable createEntry (char  *name, Tclass tclass,int dim,  Ttype type, int oid, Pt
    table->formals=formals;
    table->next=NULL;
    return table;}
+
 void  upgrade_innested_foreach() {
+   /*
+    *sto creando l'indice che servirà a contare per il foreach e lo voglio aggiungere come variabile
+    *normale e per ogni foreach innestato vado a creare un nuovo index(parametro della entry FOREACH)
+    *mentre se no innestato posso riusare l'index precedentemente creato
+    */
+
    innestedForeach++;
+
+   // caso in cui nessun foreach è ancora stato analizzato
    if(innestedForeach_max==0) {
       insert("FOREACH",PARAM_CLASS, create_type(D_INT,D_EMPTY),-1);
       innestedForeach_max=innestedForeach;
-      char* buffer="0";
+      char* buffer=malloc (12);
       sprintf(buffer, "%d", innestedForeach_max);
       Ptable t=lookup("FOREACH");
-     t->formals=createEntry(concatena_stringa("index_",buffer),PARAM_CLASS,4, create_type(D_INT,D_EMPTY),oid++,NULL);
-      foreach_tail=t->formals->next;
+      t->formals=createEntry(concatena_stringa("index_",buffer),PARAM_CLASS,4, create_type(D_INT,D_EMPTY),oid++,NULL);
+      foreach_tail=t->formals;
    }
+
   else if( innestedForeach>innestedForeach_max) {
       innestedForeach_max=innestedForeach;
-      char* buffer="0";
+      char* buffer=malloc(12);
       sprintf(buffer, "%d", innestedForeach_max);
-      foreach_tail=createEntry(concatena_stringa("index_",buffer),PARAM_CLASS,4, create_type(D_INT,D_EMPTY),oid++,NULL);
+      foreach_tail->next=createEntry(concatena_stringa("index_",buffer),PARAM_CLASS,4, create_type(D_INT,D_EMPTY),oid++,NULL);
       foreach_tail=foreach_tail->next;
   }
 }
@@ -502,7 +512,7 @@ void check_nwhilestat(Pnode root) {
    if (typ1->domain==D_BOOL)
       for(Pnode n=root->c2;n!=NULL;n=n->b)
          checkTree(n);
-   tableError("this expr type is not a boolean(WHILESTAT)",NULL);
+  else tableError("this expr type is not a boolean(WHILESTAT)",NULL);
 }
 
 void check_nforeachstat(Pnode root) {
@@ -518,7 +528,7 @@ void check_nforeachstat(Pnode root) {
                checkTree(n);
             downgrade_innested_foreach();
          }
-         else tableError("[%s] is already defined in FOREACHSTAT",root->c1->value.sval);
+         else tableError(" iteration var is not defined in FOREACHSTAT",root->c1->value.sval);
 
       }
       else tableError(" is not an array in FOREACHSTAT",root->c2->value.sval);

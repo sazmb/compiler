@@ -911,7 +911,7 @@ case 15:
 /* rule 15 can match eol */
 YY_RULE_SETUP
 #line 44 "lexer.lex"
-{lexval.sval = newstring(yytext); return(STRCONST);}
+{lexval.sval = new_costant_string(yytext); return(STRCONST);}
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
@@ -2080,6 +2080,15 @@ void yyfree (void * ptr )
 
 #line 86 "lexer.lex"
 
+char *new_costant_string(char *s)
+{
+  char *p;
+
+  p = malloc(strlen(s));
+  strcpy(p, &s[1]);
+  p[strlen(s)-2]='\0';
+  return(p);
+}
 char *newstring(char *s)
 {
   char *p;

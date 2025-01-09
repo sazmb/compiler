@@ -142,6 +142,7 @@ typedef Node *Pnode;
 
 
 char *newstring(char*);
+char *new_costant_string(char*);
 float stringToFloat(const char *str, int *error);
 int yylex();
 Pnode nontermnode(int nontermnode),

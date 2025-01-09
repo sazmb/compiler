@@ -41,7 +41,7 @@ end {return(END);}
 
 {intconst} {lexval.ival = atoi(yytext); return(INTCONST);}
 {realconst} {lexval.rval = stringToFloat(yytext, &error); return(REALCONST);}
-{strconst} {lexval.sval = newstring(yytext); return(STRCONST);}
+{strconst} {lexval.sval = new_costant_string(yytext); return(STRCONST);}
 {boolconst} {lexval.bval = (yytext[0] == 'f' ? FALSE : TRUE); return(BOOLCONST);}
 
 {sugar} {return(yytext[0]);}
@@ -84,6 +84,15 @@ foreach {return(FOREACH);}
 {id} {lexval.sval = newstring(yytext); return(ID);}
 . {return(ERROR);}
 %%
+char *new_costant_string(char *s)
+{
+  char *p;
+
+  p = malloc(strlen(s));
+  strcpy(p, &s[1]);
+  p[strlen(s)-2]='\0';
+  return(p);
+}
 char *newstring(char *s)
 {
   char *p;

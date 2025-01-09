@@ -55,6 +55,28 @@ script_list=(
     "./test_scripts/script48.sh"
     "./test_scripts/script49.sh"
     "./test_scripts/script50.sh"
+    "./test_scripts/script51.sh"
+    "./test_scripts/script52.sh"
+    "./test_scripts/script53.sh"
+    "./test_scripts/script54.sh"
+    "./test_scripts/script55.sh"
+    "./test_scripts/script56.sh"
+    "./test_scripts/script57.sh"
+    "./test_scripts/script58.sh"
+    "./test_scripts/script59.sh"
+    "./test_scripts/script60.sh"
+    "./test_scripts/script61.sh"
+    "./test_scripts/script62.sh"
+    "./test_scripts/script63.sh"
+    "./test_scripts/script64.sh"
+    "./test_scripts/script65.sh"
+    "./test_scripts/script66.sh"
+    "./test_scripts/script67.sh"
+    "./test_scripts/script68.sh"
+    "./test_scripts/script69.sh"
+    "./test_scripts/script70.sh"
+
+
 )
 
 # Lista dei file di output per salvare i risultati
@@ -109,6 +131,38 @@ output_files=(
     "pcode_test/pcode_48.txt"
     "pcode_test/pcode_49.txt"
     "pcode_test/pcode_50.txt"
+    "pcode_test/pcode_51.txt"
+    "pcode_test/pcode_52.txt"
+    "pcode_test/pcode_53.txt"
+    "pcode_test/pcode_54.txt"
+    "pcode_test/pcode_55.txt"
+    "pcode_test/pcode_56.txt"
+    "pcode_test/pcode_57.txt"
+    "pcode_test/pcode_58.txt"
+    "pcode_test/pcode_59.txt"
+    "pcode_test/pcode_60.txt"
+    "pcode_test/pcode_61.txt"
+    "pcode_test/pcode_62.txt"
+    "pcode_test/pcode_63.txt"
+    "pcode_test/pcode_64.txt"
+    "pcode_test/pcode_65.txt"
+    "pcode_test/pcode_66.txt"
+    "pcode_test/pcode_67.txt"
+    "pcode_test/pcode_68.txt"
+    "pcode_test/pcode_69.txt"
+    "pcode_test/pcode_70.txt"
+"pcode_test/pcode_61.txt"
+"pcode_test/pcode_62.txt"
+"pcode_test/pcode_63.txt"
+"pcode_test/pcode_64.txt"
+"pcode_test/pcode_65.txt"
+"pcode_test/pcode_66.txt"
+"pcode_test/pcode_67.txt"
+"pcode_test/pcode_68.txt"
+"pcode_test/pcode_69.txt"
+"pcode_test/pcode_70.txt"
+
+
 )
  # Vettore dei valori di uscita attesi (esempio: success=0, failure=1, custom=42, etc.)
   expected_exit_codes=(0 0 0 0 0
@@ -120,26 +174,35 @@ output_files=(
                        0 0 0 0 0
                        0 0 0 0 0
                        0 0 0 0 0
+                       0 0 0 0 0
+                       0 0 0 0 0
+                       0 0 0 0 0
+                       0 0 0 0 0
                        0 0 0 0 0 )
   # Contatore per indicare l'indice corrente del vettore di valori attesi
-    index=0
+  index=0
+  PRINT_SUCCESS=false
 
-# Controlla se il parametro -all è stato fornito
-PRINT_SUCCESS=false
-if [[ "$1" == "-all" ]]; then
-    PRINT_SUCCESS=true
-fi
+  # Controlla se i parametri per l'intervallo sono stati passati
+  if [[ "$1" == "-ver" ]]; then
+      PRINT_SUCCESS=true
+      shift  # Rimuovi -ver dai parametri per non interferire con gli altri
+  fi
 
-# Controlla se il programma C esiste
-if [[ ! -x "$C_PROGRAM" ]]; then
-    echo "Errore: Il programma C non è eseguibile o non esiste."
-    exit 1
-fi
+  # Verifica se sono stati passati gli estremi del ciclo (due numeri interi)
+  if [[ $# -ge 2 ]]; then
+      START_INDEX=$1
+      END_INDEX=$2
+      shift 2  # Rimuove gli estremi passati dalla lista dei parametri
+  else
+        START_INDEX=0
+        END_INDEX=$((${#script_list[@]} - 1))
+    fi
 
-# Loop per eseguire ciascuno script Bash e salvare i risultati
-for i in "${!script_list[@]}"; do
-    script="${script_list[$i]}"
-    output_file="${output_files[$i]}"
+  # Loop per eseguire ciascuno script Bash e successivamente il programma C
+  for ((index=$START_INDEX; index<=$END_INDEX; index++)); do
+      script="${script_list[$index]}"
+      output_file="${output_files[$index]}"
 
     # Verifica se lo script esiste ed è eseguibile
     if [[ -x "$script" ]]; then
@@ -158,7 +221,7 @@ for i in "${!script_list[@]}"; do
     else
         echo "Errore: Lo script $script non è eseguibile o non esiste."
     fi
-   ((index++))
+
     echo "------------------------"
 done
 

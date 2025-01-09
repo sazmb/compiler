@@ -65,6 +65,7 @@ const char *opCodeStrings[] = {
 
 
 int vars = 0;
+int foreach_vars = 0;
 int environment;
 int foreach_lvl = 0;
 //start region function to manipulate code
@@ -276,16 +277,24 @@ Code choose_math_op(Pnode root, int operator, int type) {
 }
 
 Code gen_var_section(Pnode root) {
+    //vado a prendere il primo id della prima decl
     Ptable t1 = lookup(root->c1->c1->value.sval);
     Code result_code;
-
+    // la dim è uguale per tutti gli id all'interno della prima decl (cerco nalla stable solo quella del primo id)
     int dim = t1->dimension;
-
+    //per ogni id all'interno della decl vado a creare la istruzione di newo
     if (t1->type->domain == D_ARRAY)
         result_code = makecode2(NEWO, dim, 0);
     else
         result_code = makecode2(NEWO, dim, 1);
     vars++;
+    for(Pnode n = root->c1->c1->b; n != NULL; n = n->b){
+        if (t1->type->domain == D_ARRAY)
+            result_code = appcode(result_code, makecode2(NEWO, dim, 0));
+        else
+            result_code = appcode(result_code, makecode2(NEWO, dim, 1));
+    vars++;
+}
     for (Pnode n = root->c1->b; n != NULL; n = n->b) {
         Ptable t = lookup(n->c1->value.sval);
         dim = t->dimension;
@@ -294,6 +303,13 @@ Code gen_var_section(Pnode root) {
         else
             result_code = appcode(result_code, makecode2(NEWO, dim, 1));
         vars++;
+        for(Pnode p = n->c1->b; p!= NULL; p = p->b){
+            if (t1->type->domain == D_ARRAY)
+                result_code = appcode(result_code, makecode2(NEWO, dim, 0));
+            else
+                result_code = appcode(result_code, makecode2(NEWO, dim, 1));
+            vars++;
+        }
     }
 
 
@@ -305,6 +321,7 @@ Code gen_var_section(Pnode root) {
 Code gen_foreach_vars() {
     Ptable t2 = lookup("FOREACH");
     Code result_code = makecode2(NEWO, 4, 1);
+    vars++;
     for (Ptable t3 = t2->formals->next; t3 != NULL; t3 = t3->next) {
         result_code = appcode(result_code, makecode2(NEWO, 4, 1));
         vars++;
@@ -357,7 +374,8 @@ Code gen_lhs(Pnode root, int isaddr) {
             }
         } else {
             //caso array semplice
-            Ptable t = lookup(root->c1->c1->value.sval);
+            root=root->c1;
+            Ptable t = lookup(root->c1->value.sval);
             new_code = makecode2(LODA, environment, t->oid);
             if (root->c3 == NULL)
                 new_code = concode(4,
@@ -453,26 +471,26 @@ Code gen_foreach_stat(Pnode root) {
         t3 = t3->next;
     int index = t3->oid;
     foreach_lvl++;
-    Code new_code = concode(6,
+    Code new_code = concode(7,
                             makecode2(LODA, 0, index),
                             makecode1(LOCI, 0),
                             makecode(STOR),
-                            makecode2(LODA, 0, id2),
+                            makecode2(LOAD, 0, index),
+                            makecode2(LOAD, 0, id2),
                             makecode(CARD),
                             makecode(LTHI)
     );
     Code new_code2 = genCode(root->c3);
     for (Pnode n = root->c3->b; n != NULL; n = n->b)
         new_code2 = appcode(new_code2, genCode(n));
-    new_code = concode(16,
+    new_code = concode(15,
                        new_code,
-                       makecode1(SKPF, new_code2.size + 12),
+                       makecode1(SKPF, new_code2.size + 13),
                        makecode2(LODA, 0, id1),
-                       makecode2(LOAD, 0, id2),
+                       makecode2(LODA, 0, id2),
                        makecode2(LOAD, 0, index),
                        makecode1(IXAD, t->dimension),
-                       makecode1(IXAD, index),
-                       makecode2(INDL, 0, index),
+                       makecode2(INDL, 0, t->dimension),
                        makecode(STOR),
                        new_code2,
                        makecode2(LODA, 0, index),
@@ -893,7 +911,22 @@ void print_stat_to_file_extnd(Code code, FILE *file) {
             case LOAD:
             case LODA:
                 fprintf(file, "%d\t", stat->arg1.ival);
-                fprintf(file, "%s\n", lookup_oid(stat->arg2.ival)->name);
+               Ptable table=lookup_oid(stat->arg2.ival);
+               char* name;
+            if (table==NULL) {
+                Ptable t= lookup("FOREACH");
+                for(Ptable p=t->formals;p!=NULL; p=p->next ) {
+                if (p->oid==stat->arg2.ival) {
+                    name=malloc(strlen(p->name));
+                    name=p->name;
+                }
+
+                }
+            }else {
+                name = malloc(strlen(table->name));
+                name = table->name;
+            }
+            fprintf(file, "%s\n", name);
                 break;
             case READ:
                 fprintf(file, "%d\t", stat->arg1.ival);
