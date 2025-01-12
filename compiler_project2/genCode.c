@@ -162,49 +162,7 @@ Code makecode3(Operator op, int arg1, int arg2, int arg3) {
 }
 
 //end region
-char *evaluate_simple_format(Tdomain tdomain) {
-    switch (tdomain) {
-        case D_INT: return "i";
-        case D_STRING: return "s";
-        case D_BOOL: return "b";
 
-        case D_REAL: return "r";
-
-        default:
-            return "0";
-    }
-}
-
-char *evaluate_format(Ttype type) {
-    int count = 0;
-    switch (type->domain) {
-        case D_INT:
-        case D_STRING:
-        case D_BOOL:
-        case D_REAL:
-            return evaluate_simple_format(type->domain);
-        case D_ARRAY:
-            if (type->child < D_ARRAY)
-                return concatena_stringa("[", concatena_stringa(evaluate_simple_format(type->child), "]"));
-            if (type->child == D_RECORD) {
-                char *temp = concatena_stringa(
-                    "[{", concatena_stringa(type->fields->name, evaluate_simple_format(type->fields->domain)));
-                for (Param p = type->fields->next; p != NULL; p = p->next)
-                    temp = concatena_stringa(
-                        temp, concatena_stringa(type->fields->name, evaluate_simple_format(type->fields->domain)));
-                return concatena_stringa(temp, "]}");
-            }
-        case D_RECORD:
-
-            char *temp = concatena_stringa(
-                "{", concatena_stringa(type->fields->name, evaluate_simple_format(type->fields->domain)));
-            for (Param p = type->fields->next; p != NULL; p = p->next)
-                temp = concatena_stringa(
-                    temp, concatena_stringa(type->fields->name, evaluate_simple_format(type->fields->domain)));
-            return concatena_stringa(temp, "}");
-        default: return 0;
-    }
-}
 
 Code choose_comp_op(Pnode root, int operator, int type) {
     Code new_code = endcode();
@@ -530,6 +488,9 @@ Code gen_logic_expr(Pnode root) {
 Code gen_comp_expr(Pnode root) {
     if (root->value.ival != T_EQUAL && root->value.ival != T_NOTEQUAL) {
         Ttype t = checkTree(root->c1); // no control because the typechecking already made in stable
+        if (root->value.ival == T_IN )
+            return choose_comp_op(root, root->value.ival, t->domain);
+        else
         return choose_comp_op(root, root->value.ival, t->domain);
     }
     if (root->value.ival == T_EQUAL)
@@ -544,7 +505,7 @@ Code gen_math_expr(Pnode root) {
         return choose_math_op(root, root->value.ival, t->domain);
     }
 
-    return concode(3, genCode(root->c1), genCode(root->c2), makecode(MEMB));
+    return concode(3, genCode(root->c1), genCode(root->c2), makecode(CONC));
 }
 
 Code gen_neg_expr(Pnode root) {
@@ -844,7 +805,10 @@ void print_stat_to_file(Code code, FILE *file) {
             case VARS:
                 fprintf(file, "%d\n", stat->arg1.ival);
                 break;
-            case LOCS:
+
+                case LOCS:
+                    fprintf(file, "\"%s\"\n", stat->arg1.sval);
+            break;
             case WRIT:
                 fprintf(file, "%s\n", stat->arg1.sval);
                 break;
@@ -896,6 +860,8 @@ void print_stat_to_file_extnd(Code code, FILE *file) {
                 set_current_env(lookup(s)->formals);
                 break;
             case LOCS:
+                fprintf(file, "\"%s\"\n", stat->arg1.sval);
+            break;
             case WRIT:
                 fprintf(file, "%s\n", stat->arg1.sval);
                 break;
@@ -929,7 +895,7 @@ void print_stat_to_file_extnd(Code code, FILE *file) {
             fprintf(file, "%s\n", name);
                 break;
             case READ:
-                fprintf(file, "%d\t", stat->arg1.ival);
+                fprintf(file, "%s ",lookup_oid(stat->arg1.ival)->name);
                 fprintf(file, "%s\n", stat->arg2.sval);
                 break;
             case PACK:

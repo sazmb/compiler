@@ -1,0 +1,11 @@
+0	5	10
+1	54	1
+2	41	12	0
+3	29	\n Array of record: 
+4	55	s
+5	44	0	[{intero:i,stringa:s}]
+6	29	\n arr of record: 
+7	55	s
+8	26	0	0
+9	55	[{intero:i,stringa:s}]
+10	18	

@@ -9,6 +9,7 @@ i = 0;
 while i < 2 do
     foreach num in nums do
         write num * i;
+        write " ";
     end;
     i = i + 1;
 end;

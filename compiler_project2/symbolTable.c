@@ -82,7 +82,42 @@ void pause_current_env() {
 void restart_current_env() {
    current_env=local_env;
 }
+char *evaluate_simple_format(Tdomain tdomain) {
+   switch (tdomain) {
+      case D_INT: return "i";
+      case D_STRING: return "s";
+      case D_BOOL: return "b";
+      case D_REAL: return "r";
+      default:
+         return "0";
+   }
+}
+char *evaluate_record_format(Ttype type){char *temp = concatena_stringa(
+                "{", concatena_stringa(type->fields->name, concatena_stringa( ":", evaluate_simple_format(type->fields->domain))));
+   for (Param p = type->fields->next; p != NULL; p = p->next)
+      temp = concatena_stringa(
+          temp,concatena_stringa(",", concatena_stringa(p->name, concatena_stringa( ":", evaluate_simple_format(p->domain)))));
+   return concatena_stringa(temp, "}");}
+char *evaluate_format(Ttype type) {
+   int count = 0;
+   switch (type->domain) {
+      case D_INT:
+      case D_STRING:
+      case D_BOOL:
+      case D_REAL:
+          return evaluate_simple_format(type->domain);
+      case D_ARRAY:
+         if (type->child != D_RECORD)
+            return concatena_stringa("[", concatena_stringa(evaluate_simple_format(type->child), "]"));
+      if (type->child == D_RECORD) {
+         return concatena_stringa("[", concatena_stringa(evaluate_record_format(type), "]"));
+      }
+      case D_RECORD:
+         return evaluate_record_format(type);
 
+      default: return 0;
+   }
+}
 
 Ptable lookup (char *name) {
    if (current_env==NULL )
@@ -210,12 +245,14 @@ int evaluate_dim(Ttype type) {
       case D_REAL:
          return evaluate_dim_2(type->domain);
       case D_ARRAY:
-         if (type->child<D_ARRAY)
-            return evaluate_dim_2(type->child);
-         if (type->child==D_RECORD)
-            for (Param p=type->fields;p!=NULL;p=p->next)
-            count+=evaluate_dim_2(p->domain);
-         return count;
+
+         if (type->child==D_RECORD){
+      for (Param p=type->fields;p!=NULL;p=p->next)
+         count+=evaluate_dim_2(p->domain);
+      return count;
+   }
+      if (type->child!=D_ARRAY)
+         return evaluate_dim_2(type->child);
 
       case D_RECORD:
 
@@ -277,21 +314,20 @@ switch  (node->symbol){
       else if(complexdomain==2 && (table->type->domain==D_ARRAY || table->type->domain==D_RECORD))
          tableError("[%s] are you trying to create an complex record",node->value.sval);
    else t=table->type;
-
    return t;
+
     case NRECTYPE: t->domain= D_RECORD;
-   node=node->c1;
-   t->fields=createParam(node, 0);
-
-   Param paramHead = t->fields;
-                   for (Pnode n=node->b; n!=NULL; n=n->b){
-                      if(search_param(t, n->c1->value.sval)==NULL) {
-                         paramHead->next=createParam(n, paramHead->next_offset);
-                         paramHead=paramHead->next;
+                      node=node->c1;
+       t->fields=createParam(node, 0);
+       Param paramHead = t->fields;
+       for (Pnode n=node->b; n!=NULL; n=n->b){
+                         if(search_param(t, n->c1->value.sval)==NULL) {
+                            paramHead->next=createParam(n, paramHead->next_offset);
+                            paramHead=paramHead->next;
+                         }
+                         else tableError("different fields have the same name in REC-TYPE-DECL", NULL);
                       }
-                      else tableError("different fields have the same name in REC-TYPE-DECL", NULL);
-                   }
-   return t;
+       return t;
 
    case NARRAYTYPE:t->domain= D_ARRAY;
                   if (node->c1==NULL){
@@ -307,7 +343,8 @@ switch  (node->symbol){
    break;
 
 }
- return NULL;}
+ return NULL;
+}
 
 
 void insert (char  *name, Tclass tclass,  Ttype type, int oid){
@@ -914,7 +951,7 @@ Ptable generate_symboltable(Pnode root) {
 }
 
 char* printTypes(Ttype type){
-   return domainTerms[type->domain];
+   return evaluate_format(type);
 }
 
 void printTable (Ptable t ){

@@ -8,7 +8,7 @@ run
     b = 14;
     if a < b then
         write "A is smaller";
-    end
+    end;
 end
 
 EOF

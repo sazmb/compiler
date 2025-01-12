@@ -1,17 +1,9 @@
 variables nums : [int];
-i : int;
 num : int;
 run
-nums = [];
-i = 0;
-while i < 5 do
-    read num;
-    nums = nums ++ [num];
-    i = i + 1;
+nums = [1, 2, 3, 4, 5];
+foreach num in nums do
+    write num * num;
+    write " ";
 end;
-write "Array: ";
-write  nums;
 end
-
-
-

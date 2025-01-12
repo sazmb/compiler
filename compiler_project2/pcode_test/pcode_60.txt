@@ -16,7 +16,7 @@
 15	46	2
 16	27	0
 17	47	11
-18	29	Counting down: 
+18	29	"Counting down: "
 19	55	s
 20	26	0	0
 21	55	i

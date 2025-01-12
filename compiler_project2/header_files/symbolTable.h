@@ -64,5 +64,5 @@ void reset_env();
 void pause_current_env();
 void restart_current_env();
 Ptable lookup_oid(int oid);
-
+char *evaluate_format(Ttype type);
 #endif
