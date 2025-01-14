@@ -8,6 +8,6 @@
 7	27	5
 8	15	
 9	47	3
-10	29	Greater than 5
+10	29	"Greater than 5"
 11	55	s
 12	18	

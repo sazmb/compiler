@@ -12,6 +12,6 @@
 11	26	0	1
 12	31	
 13	47	3
-14	29	x is less than y
+14	29	"x is less than y"
 15	55	s
 16	18	

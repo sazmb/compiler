@@ -7,11 +7,13 @@ run
 matrix = [1, 2];
 foreach row in matrix do
     foreach value in matrix do
-        write matrix[0] * 2;
+        write value * 2;
+        write " ";
     end;
 end;
 foreach value in matrix do
-        write matrix[2] * 2;
+        write 3 * 2;
+        write " ";
     end;
 end
 

@@ -236,7 +236,7 @@ void downgrade_innested_foreach() {
 
 
 
-int evaluate_dim(Ttype type) {
+int evaluate_dim(Ttype type)  {
    int count=0;
    switch (type->domain) {
       case D_INT:
@@ -497,7 +497,9 @@ void check_nassignstat(Pnode root) {
    Ttype type1=save_type(typ1);
    free(typ1);
    Ttype typ2=checkTree (root->c2);
-   if ( typecmp(type1, typ2)==0)
+   if ( typecmp(type1, typ2)==0 &&
+        !((type1->domain==D_INT && typ2->domain==D_REAL) ||
+         (typ2->domain==D_INT && type1->domain==D_REAL)))
    tableError("mismatch in ASSIGNSTAT",NULL);
 }
 
@@ -635,8 +637,11 @@ Ttype check_nmathexpr(Pnode root) {
       Ttype type1=save_type(typ1);
       free(typ1);
       Ttype typ2=checkTree (root->c2);
-      if ( typecmp(type1,typ2)>0) {
-         if(type1->domain==D_INT ||type1->domain==D_REAL )
+      if ( typecmp(type1,typ2)>0 ||
+         (type1->domain==D_INT && typ2->domain==D_REAL) ||
+         (typ2->domain==D_INT && typ1->domain==D_REAL))
+         {
+         if(type1->domain==D_INT || type1->domain==D_REAL )
             return type1;
          tableError("the type of expr is not correct in NMATHEXPR",NULL);
       }

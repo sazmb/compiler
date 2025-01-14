@@ -6,9 +6,9 @@
 5	48	
 6	26	0	0
 7	47	4
-8	29	chess!
+8	29	"chess!"
 9	55	s
 10	46	3
-11	29	Unsuccess
+11	29	"Unsuccess"
 12	55	s
 13	18	

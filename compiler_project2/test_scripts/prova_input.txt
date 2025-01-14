@@ -1,9 +1,16 @@
-variables nums : [int];
-num : int;
+variables matrix : [int];
+row : int;
+value : int;
 run
-nums = [1, 2, 3, 4, 5];
-foreach num in nums do
-    write num * num;
-    write " ";
+matrix = [1, 2];
+foreach row in matrix do
+    foreach value in matrix do
+        write value * 2;
+        write " ";
+    end;
 end;
+foreach value in matrix do
+        write 3 * 2;
+        write " ";
+    end;
 end

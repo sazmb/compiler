@@ -64,6 +64,7 @@ const char *opCodeStrings[] = {
 };
 
 
+Tdomain current_domain=D_EMPTY;
 int vars = 0;
 int foreach_vars = 0;
 int environment;
@@ -207,25 +208,25 @@ Code choose_math_op(Pnode root, int operator, int type) {
     Code new_code = endcode();
     switch (operator) {
         case T_PLUS:
-            if (type == D_INT)
+            if ((current_domain==D_INT &&  type==D_REAL) || (current_domain!=D_REAL &&  type==D_INT))
                 new_code = concode(3, genCode(root->c1), genCode(root->c2), makecode(ADDI));
-            else if (type == D_REAL)
+            else
                 new_code = concode(3, genCode(root->c1), genCode(root->c2), makecode(ADDR));
             break;
         case T_MINUS:
-            if (type == D_INT)
+            if ((current_domain==D_INT &&  type==D_REAL) || (current_domain!=D_REAL &&  type==D_INT))
                 new_code = concode(3, genCode(root->c1), genCode(root->c2), makecode(SUBI));
-            else
+             else
                 new_code = concode(3, genCode(root->c1), genCode(root->c2), makecode(SUBR));
             break;
         case T_DIVIDE:
-            if (type == D_INT)
+            if ((current_domain==D_INT &&  type==D_REAL) || (current_domain!=D_REAL &&  type==D_INT))
                 new_code = concode(3, genCode(root->c1), genCode(root->c2), makecode(DIVI));
             else
                 new_code = concode(3, genCode(root->c1), genCode(root->c2), makecode(DIVR));
             break;
         case T_MUL:
-            if (type == D_INT)
+            if ((current_domain==D_INT &&  type==D_REAL) || (current_domain!=D_REAL &&  type==D_INT))
                 new_code = concode(3, genCode(root->c1), genCode(root->c2), makecode(MULI));
             else
                 new_code = concode(3, genCode(root->c1), genCode(root->c2), makecode(MULR));
@@ -317,14 +318,17 @@ Code gen_write_stat(Pnode root) {
 
 Code gen_lhs(Pnode root, int isaddr) {
     Code new_code = endcode();
+    Tdomain domain=D_EMPTY;
     if (isaddr){
         //caso id semplice
         if (root->c1->symbol == T_ID) {
             Ptable t = lookup(root->c1->value.sval);
+            domain=t->type->domain;
             new_code = makecode2(LODA, environment, t->oid);
             //caso record semplice
             if (root->c2 != NULL) {
                 Param p = (search_param(t->type, root->c2->value.sval));
+                domain=p->domain;
                 new_code = concode(3,
                                    new_code,
                                    makecode1(LOCI, p->offset),
@@ -334,6 +338,7 @@ Code gen_lhs(Pnode root, int isaddr) {
             //caso array semplice
             root=root->c1;
             Ptable t = lookup(root->c1->value.sval);
+            domain=t->type->domain;
             new_code = makecode2(LODA, environment, t->oid);
             if (root->c3 == NULL)
                 new_code = concode(4,
@@ -344,6 +349,7 @@ Code gen_lhs(Pnode root, int isaddr) {
             //caso array di record
             else {
                 Param p = (search_param(t->type, root->c3->value.sval));
+                domain=p->domain;
                 new_code = concode(5,
                                    new_code,
                                    genCode(root->c2),
@@ -357,16 +363,19 @@ Code gen_lhs(Pnode root, int isaddr) {
         if (root->c1->symbol == T_ID) {
             Ptable t = lookup(root->c1->value.sval);
             new_code = makecode2(LOAD, environment, t->oid);
+            domain=t->type->domain;
             if (root->c2 != NULL) {
 
                 new_code = makecode2(LODA, environment, t->oid);
                 Param p = (search_param(t->type, root->c2->value.sval));
                 new_code = appcode(new_code, makecode2(INDL, p->offset, p->dim));
+                domain=p->domain;
             }
         } else {
             root=root->c1;
             Ptable t = lookup(root->c1->value.sval);
             new_code = makecode2(LODA, environment, t->oid);
+            domain=t->type->domain;
             if (root->c3 == NULL)
                 new_code = concode(5,
                                    new_code,
@@ -377,6 +386,7 @@ Code gen_lhs(Pnode root, int isaddr) {
 
             else {
                 Param p = (search_param(t->type, root->c3->value.sval));
+                domain=p->domain;
                 new_code = concode(4,
                                    new_code,
                                    genCode(root->c2),
@@ -385,11 +395,18 @@ Code gen_lhs(Pnode root, int isaddr) {
             }
         }
     }
+    if (isaddr)
+         current_domain=domain;
+    else if (!isaddr && current_domain==D_INT && domain==D_REAL)
+      new_code=  appcode(new_code,makecode( TOIN));
+    else if (!isaddr && current_domain==D_REAL && domain==D_INT)
+       new_code=appcode(new_code, makecode(TORE));
     return new_code;
 }
 
 Code gen_assign_stat(Pnode root) {
-    return concode(3, gen_lhs(root->c1, 1), genCode(root->c2), makecode(STOR));
+    Code lhs_code= gen_lhs(root->c1, 1);
+    return concode(3, lhs_code, genCode(root->c2), makecode(STOR));
 }
 
 Code gen_if_stat(Pnode root) {
@@ -583,6 +600,7 @@ Code gen_cond_expr(Pnode root) {
 Code gen_func_call(Pnode root) {
     Code new_code;
     int numparams=0;
+    Tdomain return_domain=lookup(root->value.sval)->type->domain;
     if (root->c1 != NULL) {
         new_code = genCode(root->c1);
         numparams++;
@@ -604,6 +622,10 @@ Code gen_func_call(Pnode root) {
                            makecode(APOP)
         );
     restart_current_env();
+     if ( current_domain==REAL && return_domain==D_INT)
+       appcode(new_code, makecode(TORE));
+     else if ( current_domain==D_INT && return_domain==D_REAL)
+       appcode(new_code, makecode(TOIN));
     return new_code;
 }
 
@@ -615,13 +637,18 @@ Code gen_string_const(Pnode root) {
 }
 
 Code gen_int_const(Pnode root) {
-    return makecode1(LOCI, root->value.ival);
+    Code code= makecode1(LOCI, root->value.ival);
+    if ( current_domain==D_REAL)
+       appcode(code, makecode(TORE));
+    return code;
 }
 
 Code gen_real_const(Pnode root) {
     Code code;
     code = makecode(LOCR);
     code.head->arg1.rval = root->value.rval;
+    if ( current_domain==D_INT)
+       appcode(code, makecode(TOIN));
     return code;
 }
 
