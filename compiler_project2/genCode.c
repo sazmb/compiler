@@ -600,7 +600,8 @@ Code gen_cond_expr(Pnode root) {
 Code gen_func_call(Pnode root) {
     Code new_code;
     int numparams=0;
-    Tdomain return_domain=lookup(root->value.sval)->type->domain;
+    Tdomain return_domain=D_EMPTY;
+    //return_domain=lookup(root->value.sval)->type->domain;
     if (root->c1 != NULL) {
         new_code = genCode(root->c1);
         numparams++;

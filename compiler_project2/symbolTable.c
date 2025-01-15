@@ -964,10 +964,10 @@ void printTable (Ptable t ){
    for(Ptable t1=t; t1!=NULL; t1=t1->next){
       printf("[name]: %s\t\t, [class]: %s\t\t, [type]: %s\t\t, [oid]: %d\n"
               , t1->name,   classTerms [t1->tclass], printTypes(t1->type), t1->oid);
-      if(t->tclass==FUNCT_CLASS){
+      if(t1->tclass==FUNCT_CLASS){
          for(Ptable t2=t1->formals; t2!=NULL; t2=t2->next)
             printf("\t[name]: %s\t, [class]: %s\t, [type]: %s\t, [oid]: %d\n"
-                    , t1->name,   classTerms [t1->tclass], printTypes(t1->type), t1->oid);}
+                    , t2->name,   classTerms [t2->tclass], printTypes(t2->type), t2->oid);}
    }
 }
 

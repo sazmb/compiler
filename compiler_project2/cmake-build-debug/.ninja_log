@@ -43,3 +43,11 @@
 3431	4745	7585974655094192	compiler_project2.exe	6346636ac6a950f6
 843	13078	7585989285017703	CMakeFiles/compiler_project2.dir/genCode.c.obj	95d2e736555b76da
 13097	21404	7585989407547269	compiler_project2.exe	6346636ac6a950f6
+163	1266	7585995346713201	CMakeFiles/compiler_project2.dir/genCode.c.obj	95d2e736555b76da
+1271	1863	7585995357782274	compiler_project2.exe	6346636ac6a950f6
+140	2076	7585999107873665	CMakeFiles/compiler_project2.dir/genCode.c.obj	95d2e736555b76da
+2079	3027	7585999127237753	compiler_project2.exe	6346636ac6a950f6
+216	1403	7586008005535182	CMakeFiles/compiler_project2.dir/lexer.c.obj	9472a8f684e10e36
+1405	1917	7586008017375515	CMakeFiles/compiler_project2.dir/parser.c.obj	d348ac5c2f000e2d
+1918	2518	7586008022499950	CMakeFiles/compiler_project2.dir/genCode.c.obj	95d2e736555b76da
+2518	3119	7586008028508856	compiler_project2.exe	6346636ac6a950f6
