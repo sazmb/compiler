@@ -5,71 +5,71 @@
 #include <stddef.h>
 const char *opCodeStrings[] = {
     "ADDI",
- "ADDR",
- "APOP",
- "CARD",
- "CIDX",
- "CODE",
- "CONC",
- "DIVI",
- "DIVR",
- "EMPT",
- "EQUA",
- "FUNC",
- "GEQI",
- "GEQR",
- "GEQS",
- "GTHI",
- "GTHR",
- "GTHS",
- "HALT",
- "HEAD",
- "INDL",
- "IXAD",
- "JUMP",
- "LEQI",
- "LEQR",
- "LEQS",
- "LOAD",
- "LOCI",
- "LOCR",
- "LOCS",
- "LODA",
- "LTHI",
- "LTHR",
- "LTHS",
- "MEMB",
- "MULI",
- "MULR",
- "NEGB",
- "NEGI",
- "NEGR",
- "NEQU",
- "NEWO",
- "PACK",
- "PUSH",
- "READ",
- "RETN",
- "SKIP",
- "SKPF",
- "STOR",
- "SUBI",
- "SUBR",
- "TAIL",
- "TOIN",
- "TORE",
- "VARS",
- "WRIT"
+    "ADDR",
+    "APOP",
+    "CARD",
+    "CIDX",
+    "CODE",
+    "CONC",
+    "DIVI",
+    "DIVR",
+    "EMPT",
+    "EQUA",
+    "FUNC",
+    "GEQI",
+    "GEQR",
+    "GEQS",
+    "GTHI",
+    "GTHR",
+    "GTHS",
+    "HALT",
+    "HEAD",
+    "INDL",
+    "IXAD",
+    "JUMP",
+    "LEQI",
+    "LEQR",
+    "LEQS",
+    "LOAD",
+    "LOCI",
+    "LOCR",
+    "LOCS",
+    "LODA",
+    "LTHI",
+    "LTHR",
+    "LTHS",
+    "MEMB",
+    "MULI",
+    "MULR",
+    "NEGB",
+    "NEGI",
+    "NEGR",
+    "NEQU",
+    "NEWO",
+    "PACK",
+    "PUSH",
+    "READ",
+    "RETN",
+    "SKIP",
+    "SKPF",
+    "STOR",
+    "SUBI",
+    "SUBR",
+    "TAIL",
+    "TOIN",
+    "TORE",
+    "VARS",
+    "WRIT"
 
 };
 
 
-Tdomain current_domain=D_EMPTY;
+Tdomain current_domain = D_EMPTY;
 int vars = 0;
 int foreach_vars = 0;
 int environment;
 int foreach_lvl = 0;
-//start region function to manipulate code
+
 void generation_error(char *msg) {
     fprintf(stderr, "Errore:  %s -- at line\n", msg);
     // Termina il programma con uno stato di uscita non zero (indica errore)
@@ -162,7 +162,7 @@ Code makecode3(Operator op, int arg1, int arg2, int arg3) {
     return code;
 }
 
-//end region
+
 
 
 Code choose_comp_op(Pnode root, int operator, int type) {
@@ -208,25 +208,25 @@ Code choose_math_op(Pnode root, int operator, int type) {
     Code new_code = endcode();
     switch (operator) {
         case T_PLUS:
-            if ((current_domain==D_INT &&  type==D_REAL) || (current_domain!=D_REAL &&  type==D_INT))
+            if ((current_domain == D_INT && type == D_REAL) || (current_domain != D_REAL && type == D_INT))
                 new_code = concode(3, genCode(root->c1), genCode(root->c2), makecode(ADDI));
             else
                 new_code = concode(3, genCode(root->c1), genCode(root->c2), makecode(ADDR));
             break;
         case T_MINUS:
-            if ((current_domain==D_INT &&  type==D_REAL) || (current_domain!=D_REAL &&  type==D_INT))
+            if ((current_domain == D_INT && type == D_REAL) || (current_domain != D_REAL && type == D_INT))
                 new_code = concode(3, genCode(root->c1), genCode(root->c2), makecode(SUBI));
-             else
+            else
                 new_code = concode(3, genCode(root->c1), genCode(root->c2), makecode(SUBR));
             break;
         case T_DIVIDE:
-            if ((current_domain==D_INT &&  type==D_REAL) || (current_domain!=D_REAL &&  type==D_INT))
+            if ((current_domain == D_INT && type == D_REAL) || (current_domain != D_REAL && type == D_INT))
                 new_code = concode(3, genCode(root->c1), genCode(root->c2), makecode(DIVI));
             else
                 new_code = concode(3, genCode(root->c1), genCode(root->c2), makecode(DIVR));
             break;
         case T_MUL:
-            if ((current_domain==D_INT &&  type==D_REAL) || (current_domain!=D_REAL &&  type==D_INT))
+            if ((current_domain == D_INT && type == D_REAL) || (current_domain != D_REAL && type == D_INT))
                 new_code = concode(3, genCode(root->c1), genCode(root->c2), makecode(MULI));
             else
                 new_code = concode(3, genCode(root->c1), genCode(root->c2), makecode(MULR));
@@ -247,13 +247,13 @@ Code gen_var_section(Pnode root) {
     else
         result_code = makecode2(NEWO, dim, 1);
     vars++;
-    for(Pnode n = root->c1->c1->b; n != NULL; n = n->b){
+    for (Pnode n = root->c1->c1->b; n != NULL; n = n->b) {
         if (t1->type->domain == D_ARRAY)
             result_code = appcode(result_code, makecode2(NEWO, dim, 0));
         else
             result_code = appcode(result_code, makecode2(NEWO, dim, 1));
-    vars++;
-}
+        vars++;
+    }
     for (Pnode n = root->c1->b; n != NULL; n = n->b) {
         Ptable t = lookup(n->c1->value.sval);
         dim = t->dimension;
@@ -262,7 +262,7 @@ Code gen_var_section(Pnode root) {
         else
             result_code = appcode(result_code, makecode2(NEWO, dim, 1));
         vars++;
-        for(Pnode p = n->c1->b; p!= NULL; p = p->b){
+        for (Pnode p = n->c1->b; p != NULL; p = p->b) {
             if (t1->type->domain == D_ARRAY)
                 result_code = appcode(result_code, makecode2(NEWO, dim, 0));
             else
@@ -270,9 +270,6 @@ Code gen_var_section(Pnode root) {
             vars++;
         }
     }
-
-
-    //result_code=appcode(result_code, endcode());
 
     return result_code;
 }
@@ -301,7 +298,6 @@ Code gen_func_code(Pnode root) {
 Code gen_read_stat(Pnode root) {
     Ptable t = lookup(root->c1->value.sval);
     char *format = evaluate_format(t->type);
-    //manca di generare la stringa riassuntiva da passare come secondo arg aka format
     Code new_code = makecode1(READ, t->oid);
     new_code.head->arg2.sval = format;
     return new_code;
@@ -310,7 +306,6 @@ Code gen_read_stat(Pnode root) {
 Code gen_write_stat(Pnode root) {
     Ttype t = checkTree(root->c1);
     char *format = evaluate_format(t);
-    //manca di generare la stringa riassuntiva da passare come secondo arg aka format
     Code new_code = appcode(genCode(root->c1), makecode(WRIT));
     new_code.tail->arg1.sval = format;
     return new_code;
@@ -318,38 +313,39 @@ Code gen_write_stat(Pnode root) {
 
 Code gen_lhs(Pnode root, int isaddr) {
     Code new_code = endcode();
-    Tdomain domain=D_EMPTY;
-    if (isaddr){
-        //caso id semplice
+    Tdomain domain = D_EMPTY;
+    if (isaddr) {
+          //caso tipo semplice
         if (root->c1->symbol == T_ID) {
             Ptable t = lookup(root->c1->value.sval);
-            domain=t->type->domain;
+            domain = t->type->domain;
             new_code = makecode2(LODA, environment, t->oid);
-            //caso record semplice
+            //caso record
             if (root->c2 != NULL) {
                 Param p = (search_param(t->type, root->c2->value.sval));
-                domain=p->domain;
+                domain = p->domain;
                 new_code = concode(3,
                                    new_code,
                                    makecode1(LOCI, p->offset),
                                    makecode1(IXAD, 1));
             }
         } else {
-            //caso array semplice
-            root=root->c1;
+            //caso array
+            root = root->c1;
             Ptable t = lookup(root->c1->value.sval);
-            domain=t->type->domain;
+            domain = t->type->domain;
             new_code = makecode2(LODA, environment, t->oid);
             if (root->c3 == NULL)
+                //array di tipi semplici
                 new_code = concode(4,
                                    new_code,
                                    genCode(root->c2),
                                    makecode(CIDX),
                                    makecode1(IXAD, t->dimension));
-            //caso array di record
+                 //caso array di record
             else {
                 Param p = (search_param(t->type, root->c3->value.sval));
-                domain=p->domain;
+                domain = p->domain;
                 new_code = concode(5,
                                    new_code,
                                    genCode(root->c2),
@@ -363,19 +359,18 @@ Code gen_lhs(Pnode root, int isaddr) {
         if (root->c1->symbol == T_ID) {
             Ptable t = lookup(root->c1->value.sval);
             new_code = makecode2(LOAD, environment, t->oid);
-            domain=t->type->domain;
+            domain = t->type->domain;
             if (root->c2 != NULL) {
-
                 new_code = makecode2(LODA, environment, t->oid);
                 Param p = (search_param(t->type, root->c2->value.sval));
                 new_code = appcode(new_code, makecode2(INDL, p->offset, p->dim));
-                domain=p->domain;
+                domain = p->domain;
             }
         } else {
-            root=root->c1;
+            root = root->c1;
             Ptable t = lookup(root->c1->value.sval);
             new_code = makecode2(LODA, environment, t->oid);
-            domain=t->type->domain;
+            domain = t->type->domain;
             if (root->c3 == NULL)
                 new_code = concode(5,
                                    new_code,
@@ -386,26 +381,27 @@ Code gen_lhs(Pnode root, int isaddr) {
 
             else {
                 Param p = (search_param(t->type, root->c3->value.sval));
-                domain=p->domain;
-                new_code = concode(4,
+                domain = p->domain;
+                new_code = concode(5,
                                    new_code,
                                    genCode(root->c2),
-                                   makecode(CIDX), makecode1(IXAD, t->dimension),
+                                   makecode(CIDX),
+                                   makecode1(IXAD, t->dimension),
                                    makecode2(INDL, p->offset, p->dim));
             }
         }
     }
     if (isaddr)
-         current_domain=domain;
-    else if (!isaddr && current_domain==D_INT && domain==D_REAL)
-      new_code=  appcode(new_code,makecode( TOIN));
-    else if (!isaddr && current_domain==D_REAL && domain==D_INT)
-       new_code=appcode(new_code, makecode(TORE));
+        current_domain = domain;
+    else if (!isaddr && current_domain == D_INT && domain == D_REAL)
+        new_code = appcode(new_code, makecode(TOIN));
+    else if (!isaddr && current_domain == D_REAL && domain == D_INT)
+        new_code = appcode(new_code, makecode(TORE));
     return new_code;
 }
 
 Code gen_assign_stat(Pnode root) {
-    Code lhs_code= gen_lhs(root->c1, 1);
+    Code lhs_code = gen_lhs(root->c1, 1);
     return concode(3, lhs_code, genCode(root->c2), makecode(STOR));
 }
 
@@ -482,6 +478,7 @@ Code gen_foreach_stat(Pnode root) {
 Code gen_logic_expr(Pnode root) {
     Code new_code = genCode(root->c1);
     Code new_code2 = genCode(root->c2);
+
     if (root->value.ival == T_AND) {
         new_code = concode(5,
                            new_code,
@@ -495,7 +492,7 @@ Code gen_logic_expr(Pnode root) {
                            new_code,
                            makecode1(SKPF, 3),
                            makecode1(LOCI, 1),
-                           makecode1(SKIP, 1),
+                           makecode1(SKIP, new_code2.size+1),
                            new_code2
         );
     }
@@ -504,15 +501,15 @@ Code gen_logic_expr(Pnode root) {
 
 Code gen_comp_expr(Pnode root) {
     if (root->value.ival != T_EQUAL && root->value.ival != T_NOTEQUAL) {
-        Ttype t = checkTree(root->c1); // no control because the typechecking already made in stable
-        if (root->value.ival == T_IN )
+        Ttype t = checkTree(root->c1);
+        if (root->value.ival == T_IN)
             return choose_comp_op(root, root->value.ival, t->domain);
         else
-        return choose_comp_op(root, root->value.ival, t->domain);
+            return choose_comp_op(root, root->value.ival, t->domain);
     }
     if (root->value.ival == T_EQUAL)
         return concode(3, genCode(root->c1), genCode(root->c2), makecode(EQUA));
-    //if (root->value.ival==T_NOTEQUAL)
+
     return concode(3, genCode(root->c1), genCode(root->c2), makecode(NEQU));
 }
 
@@ -599,9 +596,8 @@ Code gen_cond_expr(Pnode root) {
 
 Code gen_func_call(Pnode root) {
     Code new_code;
-    int numparams=0;
-    Tdomain return_domain=D_EMPTY;
-    //return_domain=lookup(root->value.sval)->type->domain;
+    int numparams = 0;
+    Tdomain return_domain = D_EMPTY;
     if (root->c1 != NULL) {
         new_code = genCode(root->c1);
         numparams++;
@@ -610,23 +606,27 @@ Code gen_func_call(Pnode root) {
             numparams++;
         }
         pause_current_env();
+        return_domain = lookup(root->value.sval)->type->domain;
         new_code = concode(4,
                            new_code,
                            makecode1(PUSH, numparams),
                            makecode1(JUMP, lookup(root->value.sval)->oid),
                            makecode(APOP)
         );
-    } else
+    } else {
+        pause_current_env();
+        return_domain = lookup(root->value.sval)->type->domain;
         new_code = concode(3,
                            makecode1(PUSH, numparams),
                            makecode1(JUMP, lookup(root->value.sval)->oid),
                            makecode(APOP)
         );
+    }
     restart_current_env();
-     if ( current_domain==REAL && return_domain==D_INT)
-       appcode(new_code, makecode(TORE));
-     else if ( current_domain==D_INT && return_domain==D_REAL)
-       appcode(new_code, makecode(TOIN));
+    if (current_domain == REAL && return_domain == D_INT)
+        appcode(new_code, makecode(TORE));
+    else if (current_domain == D_INT && return_domain == D_REAL)
+        appcode(new_code, makecode(TOIN));
     return new_code;
 }
 
@@ -638,9 +638,9 @@ Code gen_string_const(Pnode root) {
 }
 
 Code gen_int_const(Pnode root) {
-    Code code= makecode1(LOCI, root->value.ival);
-    if ( current_domain==D_REAL)
-       appcode(code, makecode(TORE));
+    Code code = makecode1(LOCI, root->value.ival);
+    if (current_domain == D_REAL)
+        appcode(code, makecode(TORE));
     return code;
 }
 
@@ -648,8 +648,8 @@ Code gen_real_const(Pnode root) {
     Code code;
     code = makecode(LOCR);
     code.head->arg1.rval = root->value.rval;
-    if ( current_domain==D_INT)
-       appcode(code, makecode(TOIN));
+    if (current_domain == D_INT)
+        appcode(code, makecode(TOIN));
     return code;
 }
 
@@ -789,7 +789,6 @@ void enum_code(Code *code) {
 }
 
 void evaluate_jumps(Code *code) {
-    int count = 0;
     for (Pstat stat = &(*code->head); stat != NULL; stat = stat->next)
         if (stat->op == JUMP) {
             for (Pstat temp = &(*code->head); temp != NULL; temp = temp->next)
@@ -834,9 +833,9 @@ void print_stat_to_file(Code code, FILE *file) {
                 fprintf(file, "%d\n", stat->arg1.ival);
                 break;
 
-                case LOCS:
-                    fprintf(file, "\"%s\"\n", stat->arg1.sval);
-            break;
+            case LOCS:
+                fprintf(file, "\"%s\"\n", stat->arg1.sval);
+                break;
             case WRIT:
                 fprintf(file, "%s\n", stat->arg1.sval);
                 break;
@@ -889,7 +888,7 @@ void print_stat_to_file_extnd(Code code, FILE *file) {
                 break;
             case LOCS:
                 fprintf(file, "\"%s\"\n", stat->arg1.sval);
-            break;
+                break;
             case WRIT:
                 fprintf(file, "%s\n", stat->arg1.sval);
                 break;
@@ -905,25 +904,24 @@ void print_stat_to_file_extnd(Code code, FILE *file) {
             case LOAD:
             case LODA:
                 fprintf(file, "%d\t", stat->arg1.ival);
-               Ptable table=lookup_oid(stat->arg2.ival);
-               char* name;
-            if (table==NULL) {
-                Ptable t= lookup("FOREACH");
-                for(Ptable p=t->formals;p!=NULL; p=p->next ) {
-                if (p->oid==stat->arg2.ival) {
-                    name=malloc(strlen(p->name));
-                    name=p->name;
+                Ptable table = lookup_oid(stat->arg2.ival);
+                char *name;
+                if (table == NULL) {
+                    Ptable t = lookup("FOREACH");
+                    for (Ptable p = t->formals; p != NULL; p = p->next) {
+                        if (p->oid == stat->arg2.ival) {
+                            name = malloc(strlen(p->name));
+                            name = p->name;
+                        }
+                    }
+                } else {
+                    name = malloc(strlen(table->name));
+                    name = table->name;
                 }
-
-                }
-            }else {
-                name = malloc(strlen(table->name));
-                name = table->name;
-            }
-            fprintf(file, "%s\n", name);
+                fprintf(file, "%s\n", name);
                 break;
             case READ:
-                fprintf(file, "%s ",lookup_oid(stat->arg1.ival)->name);
+                fprintf(file, "%s ", lookup_oid(stat->arg1.ival)->name);
                 fprintf(file, "%s\n", stat->arg2.sval);
                 break;
             case PACK:
@@ -949,14 +947,13 @@ void print_code_to_file(const Code *code, FILE *file, int extnd) {
 
 
     // Chiude il file
-
 }
 
-void printCode_v(Code *code, FILE* outputfile1, FILE* outputfile2) {
+void printCode_v(Code *code, FILE *outputfile1, FILE *outputfile2) {
     print_code_to_file(code, outputfile1, 0);
     print_code_to_file(code, outputfile2, 1);
 }
 
-void printCode(Code *code, FILE* outputfile) {
+void printCode(Code *code, FILE *outputfile) {
     print_code_to_file(code, outputfile, 0);
 }

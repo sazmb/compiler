@@ -3,7 +3,6 @@
 #include "header_files/symbolTable.h"
 #include "header_files/genCode.h"
 #include "header_files/parser.h"
-#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -26,7 +25,7 @@ char* estrai_sottostringa(const char* stringa, int inizio, int lunghezza) {
     }
 
     // Alloca spazio per la sottostringa (+1 per il terminatore)
-    char* sottostringa = (char*) malloc((lunghezza + 1) * sizeof(char));
+    char* sottostringa = malloc((lunghezza + 1) * sizeof(char));
     if (sottostringa == NULL) {
         perror("Errore nell'allocazione della memoria");
         return NULL;
@@ -90,7 +89,7 @@ int main(int argc, char *argv[]) {
     }
     else
         {
-        infile = fopen(input_file, "r");
+         infile = fopen(input_file, "r");
         if (infile == NULL) {
             perror("Error opening input file");
             exit(EXIT_FAILURE);
@@ -107,7 +106,7 @@ int main(int argc, char *argv[]) {
     }
     //creazione del file verbose output 2
     if (verbose && output_file!=NULL) {
-        char* output_file2 =concatena_stringa(estrai_sottostringa(output_file,0,strlen(output_file)-4), "_ver.txt");
+        char* output_file2 =string_concat(estrai_sottostringa(output_file,0,strlen(output_file)-4), "_ver.txt");
         outfile2=fopen(output_file2, "w");
         if (output_file2 && outfile2 == NULL) {
             perror("Error opening output file");
@@ -126,19 +125,6 @@ int main(int argc, char *argv[]) {
         printCode_v(&code, outfile,outfile) ;
     else
         printCode(&code, outfile);
-
-
-    // Se è stata specificata la modalità verbose, stampa i dettagli
-/*if (verbose) {
-        printf("Verbose mode enabled.\n");
-        printf("Input file: %s\n", input_file);
-        if (output_file != NULL) {
-            printf("Output file: %s\n", output_file);
-        } else {
-            printf("No output file specified. Using default: stdout\n");
-        }
-    }
-*/
 
 
     // Chiudi i file se non sono stdin o stdout

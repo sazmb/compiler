@@ -157,6 +157,6 @@ void treeprint(Pnode, int),
  yyerror(),
 tracciaVar();
 Pnode generate_abstree(FILE *input);
-char* concatena_stringa(char* buffer, char* aggiunta);
+char* string_concat(char* buffer, char* aggiunta);
 
 #endif //DEF_H

@@ -28,6 +28,7 @@ EOF ^D
 %%
 {spacing} {};
 {comment} {};
+\r\n {line++;}
 \n {line++;}
 def {return(DEF);}
 int {return(INT);}
@@ -103,10 +104,10 @@ char *newstring(char *s)
 }
 float stringToFloat(const char *str, int *error) {
     char *endptr;
-    errno = 0; // To distinguish success/failure after the call
+    errno = 0;
     float result = strtof(str, &endptr);
 
-    // Check for various possible errors
+
     if (errno == ERANGE) {
         if (result == 0.0f) {
             *error = 1; // Underflow
@@ -124,7 +125,7 @@ float stringToFloat(const char *str, int *error) {
         return 0.0f;
     }
 
-    // If we reach here, the conversion was successful
+
     *error = 0;
     return result;
 }

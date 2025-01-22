@@ -1,11 +1,27 @@
-0	5	10
+0	5	26
 1	54	1
 2	41	12	0
-3	29	"\n Array of record: "
+3	29	"Array of record: "
 4	55	s
 5	44	0	[{intero:i,stringa:s}]
-6	29	"\n arr of record: "
+6	29	" arr of record: "
 7	55	s
 8	26	0	0
 9	55	[{intero:i,stringa:s}]
-10	18	
+10	29	" array_rec[1].intero: "
+11	55	s
+12	30	0	0
+13	27	1
+14	4
+15	21	12
+16	20	0	4
+17	55	i
+18	29	" array_rec[0].stringa: "
+19	55	s
+20	30	0	0
+21	27	0
+22	4
+23	21	12
+24	20	4	8
+25	55	s
+26	18

@@ -62,7 +62,7 @@ type: atomic_type { currentRule="type_1";
      | array_type { currentRule="type_3";
                                       $$=$1;}
      ;
-atomic_type  : INT {currentRule="atomic_type_1";$$ = keynode(T_INTEGER);}//_________________________________________________>ho definito questi token???
+atomic_type  : INT {currentRule="atomic_type_1";$$ = keynode(T_INTEGER);}
               | REAL {currentRule="atomic_type_2";$$ = keynode(T_REAL);}
               | STRING {currentRule="atomic_type_3";$$ = keynode(T_STRING);}
               | BOOL{currentRule="atomic_type_4";$$ = keynode(T_BOOLEAN);}
@@ -201,7 +201,7 @@ factor: unary_op factor %prec NOT {currentRule="factor_1";$$=nontermnode(NNEGEXP
 unary_op: MINUSSIGN {currentRule="unary_op_1";$$=keynode(T_NEG_SIGN);}
         | NOT {currentRule="unary_op_2";$$=keynode(T_NOT);}
         ;
-built_in: INT {currentRule="built_in_1";$$=keynode(T_CASTINT);}//___________________________________________________>dividerle qua magari
+built_in: INT {currentRule="built_in_1";$$=keynode(T_CASTINT);}
         | REAL {currentRule="built_in_2";$$=keynode(T_CASTREAL);}
         | EMPTY_TOKEN {currentRule="built_in_3";$$=keynode(T_EMPTY);}
         | HEAD_TOKEN {currentRule="built_in_4";$$=keynode(T_HEAD);}
@@ -348,14 +348,11 @@ Pnode newnode(Typenode tnode)
  p->c1 = p->c2 = p->c3 = p->c4 = p->b = NULL;
  return(p);
 }
-void tracciaVar(){
-}
 Pnode generate_abstree(FILE *input)
 {
  int result;
  yyin = input;
  result = yyparse();
- //printf("analisi finita\n");
  return root;
 }
 void yyerror()

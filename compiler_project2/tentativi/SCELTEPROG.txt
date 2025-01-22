@@ -1,3 +1,0 @@
-symboltable
->nella symbol table ho pensato che all'interno di funzioni non si possano usare che i valori
- dei parametri

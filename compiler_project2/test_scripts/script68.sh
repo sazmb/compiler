@@ -1,8 +1,10 @@
 #!/bin/bash
 cat <<EOF
-variables x : int;
-run
-read x;
-write "You entered: ", x;
+functions factorial (n : int) : int
+    if n <= 1 then 1 else n * factorial(n - 1) end
 end
+run
+write factorial(4);
+end
+
 EOF

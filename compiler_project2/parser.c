@@ -2416,14 +2416,11 @@ Pnode newnode(Typenode tnode)
  p->c1 = p->c2 = p->c3 = p->c4 = p->b = NULL;
  return(p);
 }
-void tracciaVar(){
-}
 Pnode generate_abstree(FILE *input)
 {
  int result;
  yyin = input;
  result = yyparse();
- //printf("analisi finita\n");
  return root;
 }
 void yyerror()
